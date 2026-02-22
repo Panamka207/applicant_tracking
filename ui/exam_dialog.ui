@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ExamDialog</class>
+ <widget class="QDialog" name="ExamDialog">
+  <property name="geometry">
+   <rect>
+    <width>400</width>
+    <height>250</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Добавить экзамен</string>
+  </property>
+  <layout class="QVBoxLayout">
+
+   <item>
+    <layout class="QFormLayout">
+
+     <item row="0" column="0">
+      <widget class="QLabel">
+       <property name="text">
+        <string>Абитуриент:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="comboApplicant"/>
+     </item>
+
+     <item row="1" column="0">
+      <widget class="QLabel">
+       <property name="text">
+        <string>Предмет:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="editSubject"/>
+     </item>
+
+     <item row="2" column="0">
+      <widget class="QLabel">
+       <property name="text">
+        <string>Балл:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="spinScore"/>
+     </item>
+
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSave"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel"/>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
