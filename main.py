@@ -25,11 +25,11 @@ if __name__ == "__main__":
     from PySide6.QtWidgets import QPushButton
     btn_add = main_window.findChild(QPushButton, "btnAddPatient")
 
-    def open_patient_dialog():
-        dialog = load_ui("ui/patient_dialog.ui")
+    def open_applicant_dialog():
+        dialog = load_ui("ui/applicant_dialog.ui")
         dialog.exec()
 
-    btn_add.clicked.connect(open_patient_dialog)
+    btn_add.clicked.connect(open_applicant_dialog)
 
     main_window.show()
     sys.exit(app.exec())
