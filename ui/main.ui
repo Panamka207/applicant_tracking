@@ -38,7 +38,7 @@
        <item>
         <widget class="QPushButton" name="btnPatients">
          <property name="text">
-          <string>Пациенты</string>
+          <string>Абитуриенты</string>
          </property>
         </widget>
        </item>
