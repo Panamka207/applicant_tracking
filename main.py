@@ -1,57 +1,106 @@
+import pymysql
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtCore import QFile
+from PyQt6 import uic  # Импортируем uic
+from PyQt6.QtWidgets import QApplication, QMainWindow, QHeaderView
 
 
-def load_ui(path):
-    loader = QUiLoader()
-    ui_file = QFile(path)
+class Database:
+    def __init__(self):
+        self.connection = None
+        self.connect()
 
-    if not ui_file.open(QFile.ReadOnly):
-        raise RuntimeError(f"Не удалось открыть UI файл: {path}")
+    def connect(self):
+        try:
+            self.connection = pymysql.connect(
+                host='localhost',
+                user='root',
+                password='',
+                database='applicant_tracking',
+                charset='utf8',
+                cursorclass=pymysql.cursors.DictCursor
+            )
+            print('бд подключена')
+        except Exception as e:
+            self.connection = None
+            print('бд не подключена:', e)
 
-    window = loader.load(ui_file)
-    ui_file.close()
-    return window
+    def select(self):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT * FROM `applicants`;"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            for res in result:
+                print(res)
+
+    def close(self):
+        if self.connection:
+            self.connection.close()
 
 
-class MainWindow(QMainWindow):
+class LoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        uic.loadUi('./ui/login.ui', self)
+        self.setup_ui()
+        self.login_btn.clicked.connect(self.login)
+        self.main_window = None
 
-        # Загружаем UI
-        self.ui = load_ui("ui/main_window.ui")
-        self.setCentralWidget(self.ui)
+    def setup_ui(self):
+        self.setWindowTitle("Авторизация")
+        self.login_input.setFocus()
 
-        # Получаем stackedWidget
-        self.stacked = self.ui.findChild(
-            type(self.ui.stackedWidget), "stackedWidget")
-
-        # Подключаем кнопки меню
-        self.ui.btnPageApplicants.clicked.connect(
-            lambda: self.stacked.setCurrentIndex(0)
-        )
-        self.ui.btnPageDirections.clicked.connect(
-            lambda: self.stacked.setCurrentIndex(1)
-        )
-        self.ui.btnPageExams.clicked.connect(
-            lambda: self.stacked.setCurrentIndex(2)
-        )
-        self.ui.btnPageReports.clicked.connect(
-            lambda: self.stacked.setCurrentIndex(3)
-        )
-
-        # Открываем первую страницу по умолчанию
-        self.stacked.setCurrentIndex(0)
+    def login(self):
+        self.main_window = MyWidget()
+        self.main_window.show()
+        self.close()
 
 
-if __name__ == "__main__":
+class MyWidget(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('./ui/main_window.ui', self)
+        self.setup_tables()
+
+        # self.btnReports.clicked.connect(self.run)
+        self.btnApplicants.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.pageApplicants))
+        self.btnDashboard.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.pageDashboard))
+        self.btnApplications.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.pageApplications))
+        self.btnDirections.clicked.connect(self.open_directions)
+        self.btnDepartments.clicked.connect(self.open_departments)
+        self.btnReports.clicked.connect(self.open_reports)
+
+    def open_dashboard(self):
+        self.stackedWidget.setCurrentWidget(self.pageDashboard)
+
+    def open_applications(self):
+        self.stackedWidget.setCurrentWidget(self.pageApplications)
+
+    def open_directions(self):
+        self.stackedWidget.setCurrentWidget(self.pageDirections)
+
+    def open_departments(self):
+        self.stackedWidget.setCurrentWidget(self.pageDepartments)
+
+    def open_reports(self):
+        self.stackedWidget.setCurrentWidget(self.pageReports)
+
+    def setup_tables(self):
+        self.tableApplicants.setColumnCount(12)
+        self.tableApplicants.setHorizontalHeaderLabels(
+            ['СНИЛС', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Пол', 'Номер телефона', 'Паспортные данные', 'Медицинская справка', 'Фото'])
+        self.tableApplicants.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents)
+
+
+if __name__ == '__main__':
+    db = Database()
+    db.select()
+    db.close()
+
     app = QApplication(sys.argv)
-
-    window = MainWindow()
-    window.setWindowTitle("Учет абитуриентов")
-    window.resize(1300, 800)
-    window.show()
-
+    ex = LoginWindow()
+    ex.show()
     sys.exit(app.exec())

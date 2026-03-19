@@ -13,718 +13,1029 @@
   <property name="windowTitle">
    <string>Приёмная комиссия</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">
-QMainWindow {
-    background-color: #F2F2F7;
-}
-
-/* === SIDEBAR === */
-#sidebar {
-    background-color: #FFFFFF;
-    border-right: 1px solid #E5E5EA;
-    min-width: 220px;
-    max-width: 220px;
-}
-
-#appTitle {
-    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: #1C1C1E;
-    padding: 0px 20px;
-    margin: 0;
-}
-
-#appSubtitle {
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 12px;
-    color: #8E8E93;
-    padding: 0px 20px;
-    margin: 0;
-}
-
-#sectionLabel {
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: #8E8E93;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    padding: 6px 20px 4px 20px;
-}
-
-QPushButton#navBtn {
-    background-color: transparent;
-    border: none;
-    border-radius: 10px;
-    text-align: left;
-    padding: 9px 14px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    color: #1C1C1E;
-    margin: 1px 10px;
-}
-
-QPushButton#navBtn:hover {
-    background-color: #F2F2F7;
-}
-
-QPushButton#navBtn:checked {
-    background-color: #007AFF;
-    color: #FFFFFF;
-}
-
-/* === CONTENT === */
-#contentArea {
-    background-color: #F2F2F7;
-}
-
-#pageTitle {
-    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1C1C1E;
-    margin: 0;
-}
-
-/* === TOOLBAR === */
-#searchBox {
-    background-color: #FFFFFF;
-    border: 1px solid #E5E5EA;
-    border-radius: 10px;
-    padding: 7px 14px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    color: #1C1C1E;
-    min-width: 240px;
-}
-
-#searchBox:focus {
-    border-color: #007AFF;
-    outline: none;
-}
-
-#searchBox::placeholder {
-    color: #C7C7CC;
-}
-
-QPushButton#primaryBtn {
-    background-color: #007AFF;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-QPushButton#primaryBtn:hover {
-    background-color: #0066CC;
-}
-
-QPushButton#primaryBtn:pressed {
-    background-color: #0055AA;
-}
-
-QPushButton#dangerBtn {
-    background-color: transparent;
-    color: #FF3B30;
-    border: 1px solid #FF3B30;
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-QPushButton#dangerBtn:hover {
-    background-color: #FFF0EF;
-}
-
-QPushButton#secondaryBtn {
-    background-color: transparent;
-    color: #007AFF;
-    border: 1px solid #007AFF;
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-QPushButton#secondaryBtn:hover {
-    background-color: #F0F7FF;
-}
-
-/* === TABLE === */
-QTableWidget {
-    background-color: #FFFFFF;
-    border: none;
-    border-radius: 12px;
-    gridline-color: #F2F2F7;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 13px;
-    color: #1C1C1E;
-    selection-background-color: #EAF3FF;
-    selection-color: #1C1C1E;
-}
-
-QTableWidget::item {
-    padding: 10px 16px;
-    border-bottom: 1px solid #F2F2F7;
-}
-
-QTableWidget::item:selected {
-    background-color: #EAF3FF;
-    color: #1C1C1E;
-}
-
-QHeaderView::section {
-    background-color: #F9F9FB;
-    border: none;
-    border-bottom: 1px solid #E5E5EA;
-    padding: 10px 16px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: #8E8E93;
-    letter-spacing: 0.3px;
-}
-
-QScrollBar:vertical {
-    background: transparent;
-    width: 6px;
-}
-
-QScrollBar::handle:vertical {
-    background: #C7C7CC;
-    border-radius: 3px;
-}
-
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-    height: 0px;
-}
-
-/* === STAT CARDS === */
-#statCard {
-    background-color: #FFFFFF;
-    border-radius: 12px;
-    padding: 16px;
-}
-
-#statValue {
-    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
-    font-size: 32px;
-    font-weight: 700;
-    color: #1C1C1E;
-}
-
-#statLabel {
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 12px;
-    color: #8E8E93;
-}
-
-/* === FILTER COMBO === */
-QComboBox#filterCombo {
-    background-color: #FFFFFF;
-    border: 1px solid #E5E5EA;
-    border-radius: 10px;
-    padding: 7px 14px;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    color: #1C1C1E;
-    min-width: 160px;
-}
-
-QComboBox#filterCombo:focus {
-    border-color: #007AFF;
-}
-
-QComboBox#filterCombo::drop-down {
-    border: none;
-    width: 24px;
-}
-
-QComboBox#filterCombo::down-arrow {
-    width: 10px;
-    height: 10px;
-}
-
-QComboBox QAbstractItemView {
-    background-color: #FFFFFF;
-    border: 1px solid #E5E5EA;
-    border-radius: 10px;
-    selection-background-color: #EAF3FF;
-    selection-color: #1C1C1E;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    padding: 4px;
-}
-
-/* === STATUS BAR === */
-QStatusBar {
-    background-color: #FFFFFF;
-    border-top: 1px solid #E5E5EA;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
-    font-size: 12px;
-    color: #8E8E93;
-}
-   </string>
-  </property>
-
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="mainLayout">
+   <layout class="QHBoxLayout" name="rootLayout">
     <property name="spacing">
      <number>0</number>
     </property>
-    <property name="contentsMargins">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>0</width>
-      <height>0</height>
-     </rect>
+    <property name="leftMargin">
+     <number>0</number>
     </property>
-
-    <!-- ========== SIDEBAR ========== -->
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QWidget" name="sidebar">
-      <layout class="QVBoxLayout" name="sidebarLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="contentsMargins">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>0</width>
-         <height>0</height>
-        </rect>
-       </property>
-
-       <!-- Logo Area -->
-       <item>
-        <widget class="QWidget" name="logoArea">
-         <property name="minimumHeight">
-          <number>80</number>
-         </property>
-         <layout class="QVBoxLayout">
-          <property name="contentsMargins">
-           <rect><x>0</x><y>20</y><width>0</width><height>10</height></rect>
+     <layout class="QVBoxLayout" name="sidebarLayout">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="appTitle">
+        <property name="text">
+         <string>Приёмная комиссия</string>
+        </property>
+        <property name="margin">
+         <number>16</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="divider">
+        <property name="frameShape">
+         <enum>QFrame::Shape::HLine</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Sunken</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblMain">
+        <property name="text">
+         <string>ГЛАВНОЕ</string>
+        </property>
+        <property name="margin">
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnDashboard">
+        <property name="text">
+         <string>Обзор</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblData">
+        <property name="text">
+         <string>ДАННЫЕ</string>
+        </property>
+        <property name="margin">
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnApplicants">
+        <property name="text">
+         <string>Абитуриенты</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnApplications">
+        <property name="text">
+         <string>Заявления</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnDirections">
+        <property name="text">
+         <string>Направления</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnDepartments">
+        <property name="text">
+         <string>Отделения</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblSystem">
+        <property name="text">
+         <string>СИСТЕМА</string>
+        </property>
+        <property name="margin">
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnReports">
+        <property name="text">
+         <string>Отчёты</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="pageDashboard">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="titleDashboard">
+          <property name="text">
+           <string>Обзор</string>
           </property>
-          <property name="spacing"><number>2</number></property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="statsDashboard">
+          <property name="spacing">
+           <number>12</number>
+          </property>
           <item>
-           <widget class="QLabel" name="appTitle">
+           <widget class="QFrame" name="statCard1">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <layout class="QVBoxLayout">
+             <property name="leftMargin">
+              <number>16</number>
+             </property>
+             <property name="topMargin">
+              <number>14</number>
+             </property>
+             <property name="rightMargin">
+              <number>16</number>
+             </property>
+             <property name="bottomMargin">
+              <number>14</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="statVal1">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="statLbl1">
+               <property name="text">
+                <string>Абитуриентов</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="statCard2">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <layout class="QVBoxLayout">
+             <property name="leftMargin">
+              <number>16</number>
+             </property>
+             <property name="topMargin">
+              <number>14</number>
+             </property>
+             <property name="rightMargin">
+              <number>16</number>
+             </property>
+             <property name="bottomMargin">
+              <number>14</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="statVal2">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="statLbl2">
+               <property name="text">
+                <string>Заявлений</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="statCard3">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <layout class="QVBoxLayout">
+             <property name="leftMargin">
+              <number>16</number>
+             </property>
+             <property name="topMargin">
+              <number>14</number>
+             </property>
+             <property name="rightMargin">
+              <number>16</number>
+             </property>
+             <property name="bottomMargin">
+              <number>14</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="statVal3">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="statLbl3">
+               <property name="text">
+                <string>Направлений</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableDashboard">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>6</number>
+          </property>
+          <column>
+           <property name="text">
+            <string>СНИЛС</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Фамилия</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Имя</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Отчество</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Телефон</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Дата рождения</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageApplicants">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="titleApplicants">
             <property name="text">
-             <string>Приёмная</string>
+             <string>Абитуриенты</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="appSubtitle">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchApplicants">
+            <property name="placeholderText">
+             <string>Поиск...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddApplicant">
             <property name="text">
-             <string>комиссия</string>
+             <string>+ Добавить</string>
             </property>
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-
-       <!-- Divider -->
-       <item>
-        <widget class="QFrame" name="divider1">
-         <property name="frameShape">
-          <enum>QFrame::HLine</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="styleSheet">
-          <string>background-color: #E5E5EA; max-height: 1px; margin: 0 0px;</string>
-         </property>
-        </widget>
-       </item>
-
-       <item>
-        <spacer>
-         <property name="sizeType"><enum>Fixed</enum></property>
-         <property name="orientation"><enum>Qt::Vertical</enum></property>
-         <property name="sizeHint"><size><width>0</width><height>12</height></size></property>
-        </spacer>
-       </item>
-
-       <!-- Section: Главное -->
-       <item>
-        <widget class="QLabel" name="sectionLabel">
-         <property name="text"><string>Главное</string></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnDashboard">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Обзор</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="checked"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <!-- Section: Данные -->
-       <item>
-        <spacer>
-         <property name="sizeType"><enum>Fixed</enum></property>
-         <property name="orientation"><enum>Qt::Vertical</enum></property>
-         <property name="sizeHint"><size><width>0</width><height>8</height></size></property>
-        </spacer>
-       </item>
-
-       <item>
-        <widget class="QLabel" name="sectionLabel">
-         <property name="text"><string>Данные</string></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnApplicants">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Абитуриенты</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnApplications">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Заявления</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnDirections">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Направления</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnDepartments">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Отделения</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnDocuments">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Документы</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <!-- Section: Система -->
-       <item>
-        <spacer>
-         <property name="sizeType"><enum>Fixed</enum></property>
-         <property name="orientation"><enum>Qt::Vertical</enum></property>
-         <property name="sizeHint"><size><width>0</width><height>8</height></size></property>
-        </spacer>
-       </item>
-
-       <item>
-        <widget class="QLabel" name="sectionLabel">
-         <property name="text"><string>Система</string></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnReports">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Отчёты</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QPushButton" name="btnSettings">
-         <property name="objectName"><string>navBtn</string></property>
-         <property name="text"><string>  Настройки</string></property>
-         <property name="checkable"><bool>true</bool></property>
-         <property name="flat"><bool>true</bool></property>
-        </widget>
-       </item>
-
-       <!-- Spacer -->
-       <item>
-        <spacer>
-         <property name="orientation"><enum>Qt::Vertical</enum></property>
-         <property name="sizeHint"><size><width>0</width><height>40</height></size></property>
-        </spacer>
-       </item>
-
-      </layout>
-     </widget>
-    </item>
-
-    <!-- ========== CONTENT AREA ========== -->
-    <item>
-     <widget class="QWidget" name="contentArea">
-      <layout class="QVBoxLayout" name="contentLayout">
-       <property name="spacing">
-        <number>16</number>
-       </property>
-       <property name="contentsMargins">
-        <rect>
-         <x>32</x>
-         <y>28</y>
-         <width>32</width>
-         <height>24</height>
-        </rect>
-       </property>
-
-       <!-- Page Header -->
-       <item>
-        <layout class="QHBoxLayout" name="headerLayout">
-         <property name="spacing"><number>12</number></property>
-         <item>
-          <widget class="QLabel" name="pageTitle">
-           <property name="text"><string>Обзор</string></property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation"><enum>Qt::Horizontal</enum></property>
-           <property name="sizeHint"><size><width>40</width><height>20</height></size></property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="searchBox">
-           <property name="placeholderText">
-            <string>Поиск...</string>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableApplicants">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>6</number>
+          </property>
+          <column>
+           <property name="text">
+            <string>СНИЛС</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="filterCombo">
-           <property name="objectName"><string>filterCombo</string></property>
-           <item>
-            <property name="text"><string>Все записи</string></property>
-           </item>
-           <item>
-            <property name="text"><string>Активные</string></property>
-           </item>
-           <item>
-            <property name="text"><string>Архивные</string></property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnAdd">
-           <property name="objectName"><string>primaryBtn</string></property>
-           <property name="text"><string>+ Добавить</string></property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-
-       <!-- Stats Row -->
-       <item>
-        <layout class="QHBoxLayout" name="statsLayout">
-         <property name="spacing"><number>12</number></property>
-
-         <item>
-          <widget class="QFrame" name="statCard">
-           <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
-           <layout class="QVBoxLayout">
-            <property name="contentsMargins">
-             <rect><x>20</x><y>18</y><width>20</width><height>18</height></rect>
+          </column>
+          <column>
+           <property name="text">
+            <string>Фамилия</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Имя</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Отчество</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Телефон</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Дата рождения</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnEditApplicant">
+            <property name="text">
+             <string>Редактировать</string>
             </property>
-            <property name="spacing"><number>4</number></property>
-            <item>
-             <widget class="QLabel" name="statValue">
-              <property name="text"><string>0</string></property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="statLabel">
-              <property name="text"><string>Абитуриентов</string></property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-
-         <item>
-          <widget class="QFrame" name="statCard">
-           <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
-           <layout class="QVBoxLayout">
-            <property name="contentsMargins">
-             <rect><x>20</x><y>18</y><width>20</width><height>18</height></rect>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDeleteApplicant">
+            <property name="text">
+             <string>Удалить</string>
             </property>
-            <property name="spacing"><number>4</number></property>
-            <item>
-             <widget class="QLabel" name="statValue">
-              <property name="text"><string>0</string></property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="statLabel">
-              <property name="text"><string>Заявлений</string></property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-
-         <item>
-          <widget class="QFrame" name="statCard">
-           <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
-           <layout class="QVBoxLayout">
-            <property name="contentsMargins">
-             <rect><x>20</x><y>18</y><width>20</width><height>18</height></rect>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
-            <property name="spacing"><number>4</number></property>
-            <item>
-             <widget class="QLabel" name="statValue">
-              <property name="text"><string>0</string></property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="statLabel">
-              <property name="text"><string>Направлений</string></property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-
-         <item>
-          <widget class="QFrame" name="statCard">
-           <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
-           <layout class="QVBoxLayout">
-            <property name="contentsMargins">
-             <rect><x>20</x><y>18</y><width>20</width><height>18</height></rect>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-            <property name="spacing"><number>4</number></property>
-            <item>
-             <widget class="QLabel" name="statValue">
-              <property name="text"><string>0</string></property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="statLabel">
-              <property name="text"><string>Отделений</string></property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-
-        </layout>
-       </item>
-
-       <!-- Main Table -->
-       <item>
-        <widget class="QTableWidget" name="tableWidget">
-         <property name="columnCount"><number>6</number></property>
-         <property name="rowCount"><number>0</number></property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>false</bool>
-         </property>
-         <property name="showGrid">
-          <bool>false</bool>
-         </property>
-         <property name="verticalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-         <property name="horizontalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-         <column>
-          <property name="text"><string>СНИЛС</string></property>
-         </column>
-         <column>
-          <property name="text"><string>Фамилия</string></property>
-         </column>
-         <column>
-          <property name="text"><string>Имя</string></property>
-         </column>
-         <column>
-          <property name="text"><string>Отчество</string></property>
-         </column>
-         <column>
-          <property name="text"><string>Телефон</string></property>
-         </column>
-         <column>
-          <property name="text"><string>Дата рождения</string></property>
-         </column>
-        </widget>
-       </item>
-
-       <!-- Action Bar -->
-       <item>
-        <layout class="QHBoxLayout" name="actionLayout">
-         <property name="spacing"><number>10</number></property>
-         <item>
-          <widget class="QPushButton" name="btnEdit">
-           <property name="objectName"><string>secondaryBtn</string></property>
-           <property name="text"><string>Редактировать</string></property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnDelete">
-           <property name="objectName"><string>dangerBtn</string></property>
-           <property name="text"><string>Удалить</string></property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation"><enum>Qt::Horizontal</enum></property>
-           <property name="sizeHint"><size><width>40</width><height>20</height></size></property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnExport">
-           <property name="objectName"><string>secondaryBtn</string></property>
-           <property name="text"><string>Экспорт</string></property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-
-      </layout>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnExportApplicants">
+            <property name="text">
+             <string>Экспорт</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageApplications">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="titleApplications">
+            <property name="text">
+             <string>Заявления</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchApplications">
+            <property name="placeholderText">
+             <string>Поиск...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddApplication">
+            <property name="text">
+             <string>+ Добавить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableApplications">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>5</number>
+          </property>
+          <column>
+           <property name="text">
+            <string>Номер</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Абитуриент</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Направление</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Дата подачи</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Статус</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnEditApplication">
+            <property name="text">
+             <string>Редактировать</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDeleteApplication">
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnExportApplications">
+            <property name="text">
+             <string>Экспорт</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageDirections">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="titleDirections">
+            <property name="text">
+             <string>Направления</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchDirections">
+            <property name="placeholderText">
+             <string>Поиск...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddDirection">
+            <property name="text">
+             <string>+ Добавить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableDirections">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>6</number>
+          </property>
+          <column>
+           <property name="text">
+            <string>Код</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Название</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Отделение</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Мест</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Зачислено</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Свободно</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnEditDirection">
+            <property name="text">
+             <string>Редактировать</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDeleteDirection">
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnExportDirections">
+            <property name="text">
+             <string>Экспорт</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageDepartments">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="titleDepartments">
+            <property name="text">
+             <string>Отделения</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchDepartments">
+            <property name="placeholderText">
+             <string>Поиск...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddDepartment">
+            <property name="text">
+             <string>+ Добавить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableDepartments">
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>4</number>
+          </property>
+          <column>
+           <property name="text">
+            <string>Отделение</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Заведующий</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Направлений</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Студентов</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btnEditDepartment">
+            <property name="text">
+             <string>Редактировать</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnDeleteDepartment">
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnExportDepartments">
+            <property name="text">
+             <string>Экспорт</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageReports">
+       <layout class="QVBoxLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <property name="leftMargin">
+         <number>24</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>24</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="titleReports">
+          <property name="text">
+           <string>Отчёты</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRepApplications">
+          <property name="text">
+           <string>Сформировать: Список заявлений</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRepDirections">
+          <property name="text">
+           <string>Сформировать: Конкурс по направлениям</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRepEnrollment">
+          <property name="text">
+           <string>Сформировать: Приказ о зачислении</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
-
    </layout>
   </widget>
-
-  <!-- Status Bar -->
-  <widget class="QStatusBar" name="statusBar">
-   <property name="sizeGripEnabled"><bool>false</bool></property>
-  </widget>
-
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
-
  <resources/>
  <connections/>
 </ui>

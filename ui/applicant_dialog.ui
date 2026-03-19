@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ApplicantDialog</class>
+ <widget class="QDialog" name="ApplicantDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>520</width>
+    <height>660</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Абитуриент</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+
+QDialog {
+    background-color: #F2F2F7;
+}
+
+QLabel#dialogTitle {
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1C1C1E;
+}
+
+QLabel#fieldLabel {
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8E8E93;
+    letter-spacing: 0.3px;
+}
+
+QLineEdit, QDateEdit, QComboBox {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    color: #1C1C1E;
+    min-height: 20px;
+}
+
+QLineEdit:focus, QDateEdit:focus, QComboBox:focus {
+    border-color: #007AFF;
+}
+
+QLineEdit::placeholder {
+    color: #C7C7CC;
+}
+
+QDateEdit::up-button, QDateEdit::down-button {
+    width: 0px;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-radius: 10px;
+    selection-background-color: #EAF3FF;
+    selection-color: #1C1C1E;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    padding: 4px;
+}
+
+QFrame#formCard {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    border: none;
+}
+
+QPushButton#saveBtn {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 0px;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 44px;
+}
+
+QPushButton#saveBtn:hover {
+    background-color: #0066CC;
+}
+
+QPushButton#cancelBtn {
+    background-color: transparent;
+    color: #007AFF;
+    border: 1px solid #007AFF;
+    border-radius: 12px;
+    padding: 12px 0px;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    min-height: 44px;
+}
+
+QPushButton#cancelBtn:hover {
+    background-color: #F0F7FF;
+}
+
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #C7C7CC;
+    border-radius: 2px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+   </string>
+  </property>
+
+  <layout class="QVBoxLayout" name="dialogLayout">
+   <property name="spacing"><number>16</number></property>
+   <property name="leftMargin"><number>24</number></property>
+     <property name="topMargin"><number>24</number></property>
+     <property name="rightMargin"><number>24</number></property>
+     <property name="bottomMargin"><number>24</number></property>
+
+   <!-- Title -->
+   <item>
+    <widget class="QLabel" name="dialogTitle">
+     <property name="text"><string>Новый абитуриент</string></property>
+    </widget>
+   </item>
+
+   <!-- Scroll Area -->
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable"><bool>true</bool></property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <widget class="QWidget" name="scrollContent">
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="spacing"><number>12</number></property>
+       <property name="leftMargin"><number>0</number></property>
+     <property name="topMargin"><number>0</number></property>
+     <property name="rightMargin"><number>0</number></property>
+     <property name="bottomMargin"><number>0</number></property>
+
+       <!-- Card: Личные данные -->
+       <item>
+        <widget class="QFrame" name="formCard">
+         <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
+         <layout class="QVBoxLayout">
+          <property name="leftMargin"><number>18</number></property>
+     <property name="topMargin"><number>18</number></property>
+     <property name="rightMargin"><number>18</number></property>
+     <property name="bottomMargin"><number>18</number></property>
+          <property name="spacing"><number>12</number></property>
+
+          <!-- СНИЛС -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>СНИЛС</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editSnils">
+              <property name="placeholderText"><string>000-000-000 00</string></property>
+              <property name="maxLength"><number>14</number></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Фамилия / Имя -->
+          <item>
+           <layout class="QHBoxLayout">
+            <property name="spacing"><number>10</number></property>
+            <item>
+             <layout class="QVBoxLayout">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="fieldLabel">
+                <property name="text"><string>Фамилия</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="editLastName">
+                <property name="placeholderText"><string>Введите фамилию</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="fieldLabel">
+                <property name="text"><string>Имя</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="editFirstName">
+                <property name="placeholderText"><string>Введите имя</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Отчество -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Отчество</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editMiddleName">
+              <property name="placeholderText"><string>Введите отчество</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Дата рождения / Пол -->
+          <item>
+           <layout class="QHBoxLayout">
+            <property name="spacing"><number>10</number></property>
+            <item>
+             <layout class="QVBoxLayout">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="fieldLabel">
+                <property name="text"><string>Дата рождения</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateEdit" name="editBirthDate">
+                <property name="calendarPopup"><bool>true</bool></property>
+                <property name="displayFormat"><string>dd.MM.yyyy</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="fieldLabel">
+                <property name="text"><string>Пол</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="comboGender">
+                <item><property name="text"><string>Мужской</string></property></item>
+                <item><property name="text"><string>Женский</string></property></item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Card: Контакты -->
+       <item>
+        <widget class="QFrame" name="formCard">
+         <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
+         <layout class="QVBoxLayout">
+          <property name="leftMargin"><number>18</number></property>
+     <property name="topMargin"><number>18</number></property>
+     <property name="rightMargin"><number>18</number></property>
+     <property name="bottomMargin"><number>18</number></property>
+          <property name="spacing"><number>12</number></property>
+
+          <!-- Телефон -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Номер телефона</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editPhone">
+              <property name="placeholderText"><string>+7 (000) 000-00-00</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Email -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Электронная почта</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editEmail">
+              <property name="placeholderText"><string>example@mail.ru</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Адрес -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Адрес</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editAddress">
+              <property name="placeholderText"><string>Город, улица, дом</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Card: Документы -->
+       <item>
+        <widget class="QFrame" name="formCard">
+         <property name="frameShape"><enum>QFrame::StyledPanel</enum></property>
+         <layout class="QVBoxLayout">
+          <property name="leftMargin"><number>18</number></property>
+     <property name="topMargin"><number>18</number></property>
+     <property name="rightMargin"><number>18</number></property>
+     <property name="bottomMargin"><number>18</number></property>
+          <property name="spacing"><number>12</number></property>
+
+          <!-- Паспортные данные -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Паспортные данные</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editPassport">
+              <property name="placeholderText"><string>Серия и номер паспорта</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Мед. справка -->
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="fieldLabel">
+              <property name="text"><string>Медицинская справка</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="editMedical">
+              <property name="placeholderText"><string>Номер справки</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <item>
+        <spacer>
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint"><size><width>20</width><height>8</height></size></property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- Buttons -->
+   <item>
+    <layout class="QHBoxLayout" name="btnLayout">
+     <property name="spacing"><number>10</number></property>
+     <item>
+      <widget class="QPushButton" name="cancelBtn">
+       <property name="text"><string>Отмена</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveBtn">
+       <property name="text"><string>Сохранить</string></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+
+ <resources/>
+ <connections>
+  <connection>
+   <sender>saveBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ApplicantDialog</receiver>
+   <slot>accept()</slot>
+  </connection>
+  <connection>
+   <sender>cancelBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ApplicantDialog</receiver>
+   <slot>reject()</slot>
+  </connection>
+ </connections>
+</ui>
