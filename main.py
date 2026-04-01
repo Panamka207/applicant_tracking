@@ -1,7 +1,7 @@
 import pymysql
 import sys
 from PyQt6 import uic  # Импортируем uic
-from PyQt6.QtWidgets import QApplication, QMainWindow, QHeaderView
+from PyQt6.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem
 
 
 class Database:
@@ -12,25 +12,28 @@ class Database:
     def connect(self):
         try:
             self.connection = pymysql.connect(
-                host='localhost',
+                host='127.0.0.1',
+                port=3307,
                 user='root',
-                password='',
+                password='123456',
                 database='applicant_tracking',
                 charset='utf8',
-                cursorclass=pymysql.cursors.DictCursor
+                # cursorclass=pymysql.cursors.DictCursor
             )
             print('бд подключена')
         except Exception as e:
             self.connection = None
             print('бд не подключена:', e)
 
-    def select(self):
+    def select(self, table):
         with self.connection.cursor() as cursor:
-            sql = "SELECT * FROM `applicants`;"
+            sql = f"SELECT * FROM `{table}`;"
             cursor.execute(sql)
             result = cursor.fetchall()
             for res in result:
                 print(res)
+            print(f"Загружено {len(result)} строк из таблицы {table}")
+            return result
 
     def close(self):
         if self.connection:
@@ -59,46 +62,102 @@ class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('./ui/main_window.ui', self)
+
+        self.db = Database()
+
         self.setup_tables()
+        self.connect_button()
+        self.load_data()
 
+        self.menu_buttons = [
+            self.btnApplicants,
+            self.btnDashboard,
+            self.btnApplications,
+            self.btnDirections,
+            self.btnDepartments,
+            self.btnReports
+        ]
+        self.btnDashboard.setChecked(True)
         # self.btnReports.clicked.connect(self.run)
+
+    def on_menu_click(self, btn):
+        for b in self.menu_buttons:
+            b.setChecked(False)  # снять со всех
+        btn.setChecked(True)  # поставить на нажатую
+
+    def connect_button(self):
         self.btnApplicants.clicked.connect(
-            lambda: self.stackedWidget.setCurrentWidget(self.pageApplicants))
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageApplicants), self.on_menu_click(self.btnApplicants)))
         self.btnDashboard.clicked.connect(
-            lambda: self.stackedWidget.setCurrentWidget(self.pageDashboard))
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageDashboard), self.on_menu_click(self.btnDashboard)))
         self.btnApplications.clicked.connect(
-            lambda: self.stackedWidget.setCurrentWidget(self.pageApplications))
-        self.btnDirections.clicked.connect(self.open_directions)
-        self.btnDepartments.clicked.connect(self.open_departments)
-        self.btnReports.clicked.connect(self.open_reports)
-
-    def open_dashboard(self):
-        self.stackedWidget.setCurrentWidget(self.pageDashboard)
-
-    def open_applications(self):
-        self.stackedWidget.setCurrentWidget(self.pageApplications)
-
-    def open_directions(self):
-        self.stackedWidget.setCurrentWidget(self.pageDirections)
-
-    def open_departments(self):
-        self.stackedWidget.setCurrentWidget(self.pageDepartments)
-
-    def open_reports(self):
-        self.stackedWidget.setCurrentWidget(self.pageReports)
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageApplications), self.on_menu_click(self.btnApplications)))
+        self.btnDirections.clicked.connect(
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageDirections), self.on_menu_click(self.btnDirections)))
+        self.btnDepartments.clicked.connect(
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageDepartments), self.on_menu_click(self.btnDepartments)))
+        self.btnReports.clicked.connect(
+            lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
 
     def setup_tables(self):
         self.tableApplicants.setColumnCount(12)
         self.tableApplicants.setHorizontalHeaderLabels(
-            ['СНИЛС', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Пол', 'Номер телефона', 'Паспортные данные', 'Медицинская справка', 'Фото'])
+            ['СНИЛС', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Пол', 'Номер телефона', 'Паспортные данные', 'Медицинская справка', 'Электронная почта', 'Адрес', 'Фото'])
         self.tableApplicants.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents)
 
+        self.tableApplications.setColumnCount(4)
+        self.tableApplications.setHorizontalHeaderLabels(
+            ['id', 'СНИЛС', 'Код специальности', 'Дата подачи', 'Льгота'])
+        self.tableApplications.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents)
+        self.tableApplications.setColumnHidden(0, True)
+
+        self.tableDirections.setColumnCount(7)
+        self.tableDirections.setHorizontalHeaderLabels(
+            ['Код специальности', 'Название специальности', 'Название отделения', 'Количество бюджетных мест', 'Количество платных мест', 'Время обучения', 'Форма обучения'])
+        self.tableDirections.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents)
+        self.tableDirections.setColumnHidden(0, True)
+
+        self.tableDepartments.setColumnCount(3)
+        self.tableDepartments.setHorizontalHeaderLabels(
+            ['id', 'Название отделения', 'Заведующий отделения'])
+        self.tableDepartments.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents)
+        self.tableDepartments.setColumnHidden(0, True)
+
+    def load_data(self):
+        tables = {
+            'applicants': self.tableApplicants,
+            'applications': self.tableApplications,
+            'departaments': self.tableDepartments,
+            'specialties': self.tableDirections
+        }
+
+        for key, value in tables.items():
+            print(key, value)
+            sql = self.db.select(key)
+
+            if sql and len(sql) > 0:
+                actual_columns = len(sql[0])
+                print(
+                    f"База вернула {actual_columns} колонок, таблица ожидает {value.columnCount()}")
+
+                if actual_columns != value.columnCount():
+                    value.setColumnCount(actual_columns)
+
+            value.setRowCount(len(sql))
+            for row_number, row_data in enumerate(sql):
+                for column_number, data in enumerate(row_data):
+                    value.setItem(
+                        row_number, column_number, QTableWidgetItem(str(data)))
+
 
 if __name__ == '__main__':
-    db = Database()
-    db.select()
-    db.close()
+    # db = Database()
+    # db.select()
+    # db.close()
 
     app = QApplication(sys.argv)
     ex = LoginWindow()
