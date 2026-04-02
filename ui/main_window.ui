@@ -659,6 +659,13 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="btnUpdateApplicant">
+            <property name="text">
+             <string>Обновить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer>
             <property name="orientation">
              <enum>Qt::Orientation::Horizontal</enum>

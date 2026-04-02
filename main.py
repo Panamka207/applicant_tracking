@@ -124,6 +124,8 @@ class MyWidget(QMainWindow):
         self.btnReports.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
         self.btnSearchApplicant.clicked.connect(self.search_table)
+        self.btnUpdateApplicant.clicked.connect(
+            lambda: (self.load_data(), self.searchApplicants.clear()))
 
     def setup_tables(self):
         self.tableApplicants.setColumnCount(12)
