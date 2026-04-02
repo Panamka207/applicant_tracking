@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>780</height>
+    <width>1196</width>
+    <height>772</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,13 @@ QFrame  #statCard1, #statCard2, #statCard3{
     background-color: #F5F5F5;
     border: 1px solid #E0E0E0;
     border-radius: 8px;
+}
+
+QLineEdit {
+	background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+	color: #000000;
 }
 
 QTableWidget {
@@ -559,15 +566,18 @@ QPushButton:hover {
           </item>
           <item>
            <widget class="QLineEdit" name="searchApplicants">
+            <property name="text">
+             <string/>
+            </property>
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAddApplicant">
+           <widget class="QPushButton" name="btnSearchApplicant">
             <property name="text">
-             <string>+ Добавить</string>
+             <string>Поиск</string>
             </property>
            </widget>
           </item>
@@ -638,6 +648,13 @@ QPushButton:hover {
            <widget class="QPushButton" name="btnDeleteApplicant">
             <property name="text">
              <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddApplicant">
+            <property name="text">
+             <string>+ Добавить</string>
             </property>
            </widget>
           </item>

@@ -30,9 +30,33 @@ class Database:
             sql = f"SELECT * FROM `{table}`;"
             cursor.execute(sql)
             result = cursor.fetchall()
-            for res in result:
-                print(res)
+            # for res in result:
+            #     print(res)
             print(f"Загружено {len(result)} строк из таблицы {table}")
+            return result
+
+    def count(self, table):
+        with self.connection.cursor() as cursor:
+            sql = f"SELECT COUNT(*) FROM `{table}`;"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+
+    def search(self, table, search_text):
+        search_fields = {
+            'applicants': ['snils'],
+            'applications': ['submission_date'],
+            'departaments': ['dapartment_name'],
+            'specialties': ['speciality_code']
+        }
+
+        field = search_fields[table][0]
+
+        with self.connection.cursor() as cursor:
+            sql = f"SELECT * FROM `{table}`  WHERE `{field}` LIKE '%{search_text}%';"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            print(result)
             return result
 
     def close(self):
@@ -78,6 +102,7 @@ class MyWidget(QMainWindow):
             self.btnReports
         ]
         self.btnDashboard.setChecked(True)
+        self.stackedWidget.setCurrentWidget(self.pageDashboard)
         # self.btnReports.clicked.connect(self.run)
 
     def on_menu_click(self, btn):
@@ -98,6 +123,7 @@ class MyWidget(QMainWindow):
             lambda: (self.stackedWidget.setCurrentWidget(self.pageDepartments), self.on_menu_click(self.btnDepartments)))
         self.btnReports.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
+        self.btnSearchApplicant.clicked.connect(self.search_table)
 
     def setup_tables(self):
         self.tableApplicants.setColumnCount(12)
@@ -106,7 +132,7 @@ class MyWidget(QMainWindow):
         self.tableApplicants.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents)
 
-        self.tableApplications.setColumnCount(4)
+        self.tableApplications.setColumnCount(5)
         self.tableApplications.setHorizontalHeaderLabels(
             ['id', 'СНИЛС', 'Код специальности', 'Дата подачи', 'Льгота'])
         self.tableApplications.horizontalHeader().setSectionResizeMode(
@@ -118,7 +144,7 @@ class MyWidget(QMainWindow):
             ['Код специальности', 'Название специальности', 'Название отделения', 'Количество бюджетных мест', 'Количество платных мест', 'Время обучения', 'Форма обучения'])
         self.tableDirections.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents)
-        self.tableDirections.setColumnHidden(0, True)
+        # self.tableDirections.setColumnHidden(0, True)
 
         self.tableDepartments.setColumnCount(3)
         self.tableDepartments.setHorizontalHeaderLabels(
@@ -128,6 +154,9 @@ class MyWidget(QMainWindow):
         self.tableDepartments.setColumnHidden(0, True)
 
     def load_data(self):
+        '''Загрузка данных из бд'''
+        # self.statVal1 = ''
+
         tables = {
             'applicants': self.tableApplicants,
             'applications': self.tableApplications,
@@ -150,8 +179,18 @@ class MyWidget(QMainWindow):
             value.setRowCount(len(sql))
             for row_number, row_data in enumerate(sql):
                 for column_number, data in enumerate(row_data):
-                    value.setItem(
-                        row_number, column_number, QTableWidgetItem(str(data)))
+                    value.setItem(row_number, column_number,
+                                  QTableWidgetItem(str(data)))
+
+    def search_table(self):
+        text = self.searchApplicants.text()
+        result = self.db.search('applicants', text)
+
+        self.tableApplicants.setRowCount(len(result))
+        for row_number, row_data in enumerate(result):
+            for column_number, data in enumerate(row_data):
+                self.tableApplicants.setItem(row_number, column_number,
+                                             QTableWidgetItem(str(data)))
 
 
 if __name__ == '__main__':
