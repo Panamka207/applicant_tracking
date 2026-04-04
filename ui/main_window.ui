@@ -330,7 +330,7 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="pageDashboard">
        <layout class="QVBoxLayout">
@@ -732,16 +732,16 @@ QPushButton:hover {
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="searchApplications">
+           <widget class="QLineEdit" name="searchApplication">
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAddApplication">
+           <widget class="QPushButton" name="btnSearchApplication">
             <property name="text">
-             <string>+ Добавить</string>
+             <string>Поиск</string>
             </property>
            </widget>
           </item>
@@ -807,6 +807,20 @@ QPushButton:hover {
            <widget class="QPushButton" name="btnDeleteApplication">
             <property name="text">
              <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddApplication">
+            <property name="text">
+             <string>+ Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnUpdateApplication">
+            <property name="text">
+             <string>Обновить</string>
             </property>
            </widget>
           </item>
@@ -884,9 +898,9 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAddDirection">
+           <widget class="QPushButton" name="btnSearchDirection">
             <property name="text">
-             <string>+ Добавить</string>
+             <string>Поиск</string>
             </property>
            </widget>
           </item>
@@ -957,6 +971,20 @@ QPushButton:hover {
            <widget class="QPushButton" name="btnDeleteDirection">
             <property name="text">
              <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddDirection">
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnUpdateDirection">
+            <property name="text">
+             <string>Обновить</string>
             </property>
            </widget>
           </item>
@@ -1034,9 +1062,9 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAddDepartment">
+           <widget class="QPushButton" name="btnSearchDepartment">
             <property name="text">
-             <string>+ Добавить</string>
+             <string>Поиск</string>
             </property>
            </widget>
           </item>
@@ -1097,6 +1125,20 @@ QPushButton:hover {
            <widget class="QPushButton" name="btnDeleteDepartment">
             <property name="text">
              <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAddDepartment">
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnUpdateDepartment">
+            <property name="text">
+             <string>Обновить</string>
             </property>
            </widget>
           </item>

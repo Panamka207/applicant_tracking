@@ -44,16 +44,19 @@ class Database:
 
     def search(self, table, search_text):
         search_fields = {
-            'applicants': ['snils'],
-            'applications': ['submission_date'],
-            'departaments': ['dapartment_name'],
-            'specialties': ['speciality_code']
+            'applicants': ['snils', 'last_name', 'first_name', 'middle_name', 'birth_date', 'phone', 'passport', 'passport', 'address'],
+            'applications': ['submission_date', 'snils', 'submission_date'],
+            'departaments': ['department_name', 'head_of_department'],
+            'specialties': ['speciality_code', 'speciality_name']
         }
 
-        field = search_fields[table][0]
+        fields = search_fields[table]
+
+        where = ' OR '.join(
+            [f"`{field}` LIKE '%{search_text}%'" for field in fields])
 
         with self.connection.cursor() as cursor:
-            sql = f"SELECT * FROM `{table}`  WHERE `{field}` LIKE '%{search_text}%';"
+            sql = f"SELECT * FROM `{table}` WHERE {where};"
             cursor.execute(sql)
             result = cursor.fetchall()
             print(result)
@@ -90,6 +93,26 @@ class MyWidget(QMainWindow):
         self.db = Database()
 
         self.setup_tables()
+
+        self.search_config = {
+            'applicants': {
+                'search_field': self.searchApplicants,
+                'table_widget': self.tableApplicants
+            },
+            'applications': {
+                'search_field': self.searchApplication,
+                'table_widget': self.tableApplications
+            },
+            'departaments': {
+                'search_field': self.searchDepartments,
+                'table_widget': self.tableDepartments
+            },
+            'specialties': {
+                'search_field': self.searchDirections,
+                'table_widget': self.tableDirections
+            }
+        }
+
         self.connect_button()
         self.load_data()
 
@@ -123,9 +146,22 @@ class MyWidget(QMainWindow):
             lambda: (self.stackedWidget.setCurrentWidget(self.pageDepartments), self.on_menu_click(self.btnDepartments)))
         self.btnReports.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
-        self.btnSearchApplicant.clicked.connect(self.search_table)
+        self.btnSearchApplicant.clicked.connect(lambda:
+                                                self.search_table('applicants'))
+        self.btnSearchApplication.clicked.connect(lambda:
+                                                  self.search_table('applications'))
+        self.btnSearchDirection.clicked.connect(lambda:
+                                                self.search_table('specialties'))
+        self.btnSearchDepartment.clicked.connect(lambda:
+                                                 self.search_table('departaments'))
         self.btnUpdateApplicant.clicked.connect(
             lambda: (self.load_data(), self.searchApplicants.clear()))
+        self.btnUpdateApplication.clicked.connect(
+            lambda: (self.load_data(), self.searchApplication.clear()))
+        self.btnUpdateDirection.clicked.connect(
+            lambda: (self.load_data(), self.searchDirections.clear()))
+        self.btnUpdateDepartment.clicked.connect(
+            lambda: (self.load_data(), self.searchDepartments.clear()))
 
     def setup_tables(self):
         self.tableApplicants.setColumnCount(12)
@@ -184,15 +220,16 @@ class MyWidget(QMainWindow):
                     value.setItem(row_number, column_number,
                                   QTableWidgetItem(str(data)))
 
-    def search_table(self):
-        text = self.searchApplicants.text()
-        result = self.db.search('applicants', text)
+    def search_table(self, table_name):
+        config = self.search_config[table_name]
+        text = config['search_field'].text()
+        result = self.db.search(table_name, text)
 
-        self.tableApplicants.setRowCount(len(result))
+        config['table_widget'].setRowCount(len(result))
         for row_number, row_data in enumerate(result):
             for column_number, data in enumerate(row_data):
-                self.tableApplicants.setItem(row_number, column_number,
-                                             QTableWidgetItem(str(data)))
+                config['table_widget'].setItem(row_number, column_number,
+                                               QTableWidgetItem(str(data)))
 
 
 if __name__ == '__main__':
