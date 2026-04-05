@@ -25,6 +25,7 @@ QPushButton {
     color: #FFFFFF;
     border: none;
     border-radius: 3px;
+	min-height: 20px;
 }
 QPushButton:hover {
     background-color: #1565C0;
@@ -44,6 +45,7 @@ QLineEdit {
     border: 1px solid #E0E0E0;
     border-radius: 8px;
 	color: #000000;
+	min-height: 20px;
 }
 
 QTableWidget {
@@ -65,6 +67,26 @@ QHeaderView::section:horizontal:last {
 
 QTableWidget::item {
     color: #424242;
+}
+
+QComboBox {
+	background-color: rgb(255, 255, 255);
+	border: 1px solid #E0E0E0;
+	border-radius: 6px;
+	padding: 5px;
+	color: #000000;
+}
+
+QAbstractItemView {
+	background-color: rgb(255, 255, 255);
+	border: 1px solid #E0E0E0;
+	padding: 0;
+	color: rgb(0, 0, 0)
+}
+
+QAbstractItemView::item:selected {
+	background-color: #1976D2;
+	color: #FFFFFF
 }
 
 </string>
@@ -330,7 +352,7 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageDashboard">
        <layout class="QVBoxLayout">
@@ -566,12 +588,99 @@ QPushButton:hover {
           </item>
           <item>
            <widget class="QLineEdit" name="searchApplicants">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
             <property name="text">
              <string/>
             </property>
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbGender">
+            <property name="minimumSize">
+             <size>
+              <width>105</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Выберите пол</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Мужской</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Женский</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbCertificate">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Выберите справку</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Есть</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Нет</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbPhoto">
+            <property name="minimumSize">
+             <size>
+              <width>115</width>
+              <height>0</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>Выберите фото</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Есть</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Нет</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

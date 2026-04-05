@@ -62,6 +62,18 @@ class Database:
             print(result)
             return result
 
+    def filter(self, table, filters):
+        filtered = {key: value for key,
+                    value in filters.items() if 'Выберите' not in value}
+        where = ' AND '.join(
+            [f"`{key}` = '{value}'" for key, value in filtered.items()])
+        with self.connection.cursor() as cursor:
+            sql = f"SELECT * FROM `{table}` WHERE {where};"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            print(result)
+            return result
+
     def close(self):
         if self.connection:
             self.connection.close()
@@ -147,7 +159,7 @@ class MyWidget(QMainWindow):
         self.btnReports.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
         self.btnSearchApplicant.clicked.connect(lambda:
-                                                self.search_table('applicants'))
+                                                (self.search_table('applicants'), self.filter_table('applicants')))
         self.btnSearchApplication.clicked.connect(lambda:
                                                   self.search_table('applications'))
         self.btnSearchDirection.clicked.connect(lambda:
@@ -225,6 +237,26 @@ class MyWidget(QMainWindow):
         text = config['search_field'].text()
         result = self.db.search(table_name, text)
 
+        config['table_widget'].setRowCount(len(result))
+        for row_number, row_data in enumerate(result):
+            for column_number, data in enumerate(row_data):
+                config['table_widget'].setItem(row_number, column_number,
+                                               QTableWidgetItem(str(data)))
+
+    def filter_table(self, table_name):
+        if table_name == 'applicants':
+            filters = {
+                'gender': self.cmbGender.currentText(),
+                'medical_certificate': self.cmbCertificate.currentText(),
+                'foto': self.cmbPhoto.currentText()
+            }
+            if any('Выберите' not in value for value in filters.values()):
+                result = self.db.filter(table_name, filters)
+            else:
+                result = self.db.select(table_name)
+
+        # Теперь result всегда определена!
+        config = self.search_config[table_name]
         config['table_widget'].setRowCount(len(result))
         for row_number, row_data in enumerate(result):
             for column_number, data in enumerate(row_data):
