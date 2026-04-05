@@ -146,6 +146,7 @@ class MyWidget(QMainWindow):
         btn.setChecked(True)  # поставить на нажатую
 
     def connect_button(self):
+        '''Подключение кнопок'''
         self.btnApplicants.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageApplicants), self.on_menu_click(self.btnApplicants)))
         self.btnDashboard.clicked.connect(
@@ -176,6 +177,7 @@ class MyWidget(QMainWindow):
             lambda: (self.load_data(), self.searchDepartments.clear()))
 
     def setup_tables(self):
+        '''Загрузка заголовков таблиц'''
         self.tableApplicants.setColumnCount(12)
         self.tableApplicants.setHorizontalHeaderLabels(
             ['СНИЛС', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Пол', 'Номер телефона', 'Паспортные данные', 'Медицинская справка', 'Электронная почта', 'Адрес', 'Фото'])
@@ -233,6 +235,7 @@ class MyWidget(QMainWindow):
                                   QTableWidgetItem(str(data)))
 
     def search_table(self, table_name):
+        '''Поиск и вывод данных в таблицу'''
         config = self.search_config[table_name]
         text = config['search_field'].text()
         result = self.db.search(table_name, text)
