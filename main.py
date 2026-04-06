@@ -57,6 +57,7 @@ class Database:
 
         with self.connection.cursor() as cursor:
             sql = f"SELECT * FROM `{table}` WHERE {where};"
+            print(sql)
             cursor.execute(sql)
             result = cursor.fetchall()
             print(result)
@@ -65,13 +66,22 @@ class Database:
     def filter(self, table, filters):
         filtered = {key: value for key,
                     value in filters.items() if 'Выберите' not in value}
-        where = ' AND '.join(
-            [f"`{key}` = '{value}'" for key, value in filtered.items()])
+
+        conditions = []
+        for key, value in filtered.items():
+            # Если значение - число (0 или 1), без кавычек
+            if value in ['0', '1']:
+                conditions.append(f"`{key}` = {value}")
+            else:
+                # Если строка - с кавычками
+                conditions.append(f"`{key}` = '{value}'")
+
+        where = ' AND '.join(conditions)
         with self.connection.cursor() as cursor:
             sql = f"SELECT * FROM `{table}` WHERE {where};"
             cursor.execute(sql)
             result = cursor.fetchall()
-            print(result)
+            print(sql)
             return result
 
     def close(self):
@@ -160,13 +170,13 @@ class MyWidget(QMainWindow):
         self.btnReports.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
         self.btnSearchApplicant.clicked.connect(lambda:
-                                                (self.search_table('applicants'), self.filter_table('applicants')))
+                                                (self.search_and_filter('applicants')))
         self.btnSearchApplication.clicked.connect(lambda:
-                                                  self.search_table('applications'))
+                                                  self.search_and_filter('applications'))
         self.btnSearchDirection.clicked.connect(lambda:
-                                                self.search_table('specialties'))
+                                                self.search_and_filter('specialties'))
         self.btnSearchDepartment.clicked.connect(lambda:
-                                                 self.search_table('departaments'))
+                                                 self.search_and_filter('departaments'))
         self.btnUpdateApplicant.clicked.connect(
             lambda: (self.load_data(), self.searchApplicants.clear()))
         self.btnUpdateApplication.clicked.connect(
@@ -234,37 +244,65 @@ class MyWidget(QMainWindow):
                     value.setItem(row_number, column_number,
                                   QTableWidgetItem(str(data)))
 
-    def search_table(self, table_name):
-        '''Поиск и вывод данных в таблицу'''
+    def search_and_filter(self, table_name):
+        '''Вывод поиска и фильтрации'''
         config = self.search_config[table_name]
-        text = config['search_field'].text()
-        result = self.db.search(table_name, text)
-
-        config['table_widget'].setRowCount(len(result))
-        for row_number, row_data in enumerate(result):
-            for column_number, data in enumerate(row_data):
-                config['table_widget'].setItem(row_number, column_number,
-                                               QTableWidgetItem(str(data)))
-
-    def filter_table(self, table_name):
-        if table_name == 'applicants':
-            filters = {
-                'gender': self.cmbGender.currentText(),
-                'medical_certificate': self.cmbCertificate.currentText(),
-                'foto': self.cmbPhoto.currentText()
-            }
-            if any('Выберите' not in value for value in filters.values()):
+        # поиск
+        search_text = config['search_field'].text()
+        if search_text:
+            result = self.db.search(table_name, search_text)
+        else:  # фильтрация
+            if table_name == 'applicants':
+                filters = {
+                    'gender': self.cmbGender.currentText(),
+                    'medical_certificate': '1' if self.cmbCertificate.currentText() == 'Есть' else
+                    ('0' if self.cmbPhoto.currentText()
+                     == 'Нет' else 'Выберите фото'),
+                    'foto': '1' if self.cmbPhoto.currentText() == 'Есть' else
+                    ('0' if self.cmbPhoto.currentText()
+                     == 'Нет' else 'Выберите фото')
+                }
                 result = self.db.filter(table_name, filters)
             else:
                 result = self.db.select(table_name)
 
-        # Теперь result всегда определена!
-        config = self.search_config[table_name]
         config['table_widget'].setRowCount(len(result))
         for row_number, row_data in enumerate(result):
             for column_number, data in enumerate(row_data):
                 config['table_widget'].setItem(row_number, column_number,
                                                QTableWidgetItem(str(data)))
+
+    # def search_table(self, table_name):
+    #     '''Поиск и вывод данных в таблицу'''
+    #     config = self.search_config[table_name]
+    #     text = config['search_field'].text()
+    #     result = self.db.search(table_name, text)
+
+    #     config['table_widget'].setRowCount(len(result))
+    #     for row_number, row_data in enumerate(result):
+    #         for column_number, data in enumerate(row_data):
+    #             config['table_widget'].setItem(row_number, column_number,
+    #                                            QTableWidgetItem(str(data)))
+
+    # def filter_table(self, table_name):
+    #     if table_name == 'applicants':
+    #         filters = {
+    #             'gender': self.cmbGender.currentText(),
+    #             'medical_certificate': '1' if self.cmbCertificate.currentText() == 'Есть' else '0',
+    #             'foto': '1' if self.cmbPhoto.currentText() == 'Есть' else '0'
+    #         }
+    #         if any('Выберите' not in value for value in filters.values()):
+    #             result = self.db.filter(table_name, filters)
+    #         else:
+    #             result = self.db.select(table_name)
+
+    #     # Теперь result всегда определена!
+    #     config = self.search_config[table_name]
+    #     config['table_widget'].setRowCount(len(result))
+    #     for row_number, row_data in enumerate(result):
+    #         for column_number, data in enumerate(row_data):
+    #             config['table_widget'].setItem(row_number, column_number,
+    #                                            QTableWidgetItem(str(data)))
 
 
 if __name__ == '__main__':

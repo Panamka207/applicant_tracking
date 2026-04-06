@@ -597,7 +597,7 @@ QPushButton:hover {
             <property name="baseSize">
              <size>
               <width>0</width>
-              <height>20</height>
+              <height>0</height>
              </size>
             </property>
             <property name="text">
@@ -842,6 +842,12 @@ QPushButton:hover {
           </item>
           <item>
            <widget class="QLineEdit" name="searchApplication">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
