@@ -182,6 +182,11 @@ background-color:#F5F5F5;
        </item>
        <item>
         <widget class="QLabel" name="lblMain">
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>ГЛАВНОЕ</string>
          </property>
@@ -211,6 +216,11 @@ background-color:#F5F5F5;
        </item>
        <item>
         <widget class="QLabel" name="lblData">
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>ДАННЫЕ</string>
          </property>
@@ -297,6 +307,11 @@ background-color:#F5F5F5;
        </item>
        <item>
         <widget class="QLabel" name="lblSystem">
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
           <string>СИСТЕМА</string>
          </property>
@@ -364,7 +379,7 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageDashboard">
        <layout class="QVBoxLayout">
@@ -863,6 +878,30 @@ QPushButton:hover {
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmdBenefit">
+            <item>
+             <property name="text">
+              <string>Выберите льготу</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Льгота для инвалидов</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Льгота для сирот</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Льгота для детей участников СВО</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

@@ -379,7 +379,7 @@ class MyWidget(QMainWindow):
         self.btnSearchDepartment.clicked.connect(lambda:
                                                  self.search_and_filter('departaments'))
         self.btnUpdateApplicant.clicked.connect(
-            lambda: (self.load_data(), self.reset_selection(self.tableApplicants, self.searchApplicants)))
+            lambda: (self.load_data(), self.reset_selection(self.tableApplicants, self.searchApplicants), self.cmbGender.setCurrentIndex(0), self.cmbCertificate.setCurrentIndex(0), self.cmbPhoto.setCurrentIndex(0)))
 
         self.btnUpdateApplication.clicked.connect(
             lambda: (self.load_data(), self.reset_selection(self.tableApplications, self.searchApplication)))
@@ -388,7 +388,7 @@ class MyWidget(QMainWindow):
             lambda: (self.load_data(), self.reset_selection(self.tableDirections, self.searchDirections)))
 
         self.btnUpdateDepartment.clicked.connect(
-            lambda: (self.load_data(), self.reset_selection(self.tableDepartments, self.searchDepartments)))
+            lambda: (self.load_data(), self.reset_selection(self.tableDepartments, self.searchDepartments), ))
         self.btnAddApplicant.clicked.connect(self.open_add_dialog)
         self.btnEditApplicant.clicked.connect(self.open_edit_dialog)
         self.btnDeleteApplicant.clicked.connect(self.delete_applicant)
@@ -422,9 +422,17 @@ class MyWidget(QMainWindow):
             QHeaderView.ResizeMode.ResizeToContents)
         self.tableDepartments.setColumnHidden(0, True)
 
+    def format_value(self, data, column_number):
+        '''Форматирование столбцов'''
+        if column_number == 8 or column_number == 11:
+            if str(data) == '0':
+                data = 'Нет'
+            elif str(data) == '1':
+                data = 'Есть'
+        return data
+
     def load_data(self):
         '''Загрузка данных из бд'''
-        # self.statVal1 = ''
 
         tables = {
             'applicants': self.tableApplicants,
@@ -448,8 +456,9 @@ class MyWidget(QMainWindow):
             value.setRowCount(len(sql))
             for row_number, row_data in enumerate(sql):
                 for column_number, data in enumerate(row_data):
+                    formatted = self.format_value(data, column_number)
                     value.setItem(row_number, column_number,
-                                  QTableWidgetItem(str(data)))
+                                  QTableWidgetItem(str(formatted)))
 
     def search_and_filter(self, table_name):
         config = self.search_config[table_name]
@@ -467,7 +476,8 @@ class MyWidget(QMainWindow):
             for row_number, row_data in enumerate(all_data):
                 flag = False
                 for column_number, data in enumerate(row_data):
-                    item = QTableWidgetItem(str(data))
+                    formatted = self.format_value(data, column_number)
+                    item = QTableWidgetItem(str(formatted))
                     table_widget.setItem(row_number, column_number, item)
                     if search_text in str(data).lower():
                         print(data)
@@ -499,8 +509,9 @@ class MyWidget(QMainWindow):
             config['table_widget'].setRowCount(len(result))
             for row_number, row_data in enumerate(result):
                 for column_number, data in enumerate(row_data):
+                    formatted = self.format_value(data, column_number)
                     config['table_widget'].setItem(row_number, column_number,
-                                                   QTableWidgetItem(str(data)))
+                                                   QTableWidgetItem(str(formatted)))
 
     def reset_selection(self, table_widget, search_field):
         table_widget.clearSelection()
@@ -528,6 +539,7 @@ class MyWidget(QMainWindow):
             self.load_data()
 
     def delete_applicant(self):
+        '''Удаление абитуриента'''
         selected = self.tableApplicants.selectedItems()
         if not selected:
             QMessageBox.warning(
