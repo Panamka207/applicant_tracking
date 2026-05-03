@@ -497,7 +497,7 @@ QAbstractItemView::item:selected {
             <number>2030</number>
            </property>
            <property name="value">
-            <number>2024</number>
+            <number>2026</number>
            </property>
           </widget>
          </item>

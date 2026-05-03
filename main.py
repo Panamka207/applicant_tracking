@@ -2,6 +2,7 @@ import pymysql
 import sys
 from PyQt6 import uic  # Импортируем uic
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QDialog, QMessageBox
+from PyQt6.QtCore import QDate
 
 
 class Database:
@@ -35,6 +36,20 @@ class Database:
             print(f"Загружено {len(result)} строк из таблицы {table}")
             return result
 
+    def get_applications_with_specialties(self):
+        with self.connection.cursor() as cursor:
+            sql = '''SELECT applications.application_id, 
+                    applications.snils, 
+                    specialties.speciality_name, 
+                    applications.submission_date, 
+                    applications.benefit
+                FROM applications
+                JOIN specialties 
+                    ON applications.speciality_code = specialties.speciality_code;'''
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result
+
     def filter(self, table, filters):
         filtered = {key: value for key,
                     value in filters.items() if 'Выберите' not in value}
@@ -49,12 +64,28 @@ class Database:
                 conditions.append(f"`{key}` = '{value}'")
 
         where = ' AND '.join(conditions)
-        with self.connection.cursor() as cursor:
-            sql = f"SELECT * FROM `{table}` WHERE {where};"
-            cursor.execute(sql)
-            result = cursor.fetchall()
-            print(sql)
-            return result
+        if table == 'applications':
+            with self.connection.cursor() as cursor:
+                sql = f'''SELECT applications.application_id, 
+                    applications.snils, 
+                    specialties.speciality_name, 
+                    applications.submission_date, 
+                    applications.benefit
+                FROM applications
+                JOIN specialties 
+                    ON applications.speciality_code = specialties.speciality_code
+                WHERE {where};'''
+                cursor.execute(sql)
+                result = cursor.fetchall()
+                print(sql)
+                return result
+        else:
+            with self.connection.cursor() as cursor:
+                sql = f"SELECT * FROM `{table}` WHERE {where};"
+                cursor.execute(sql)
+                result = cursor.fetchall()
+                print(sql)
+                return result
 
     def insert_applicant(self, data):
         with self.connection.cursor() as cursor:
@@ -78,6 +109,19 @@ class Database:
             cursor.execute(sql, (
                 data['snils'], data['school'],
                 data['graduation_year'], data['average_grade']
+            ))
+            self.connection.commit()
+
+    def insert_application(self, data):
+        with self.connection.cursor() as cursor:
+            sql = """INSERT INTO applications 
+                    (snils, speciality_code, submission_date, benefit)
+                    VALUES (%s, %s, %s, %s)"""
+            cursor.execute(sql, (
+                data['snils'],
+                data['speciality_code'],
+                data['submission_date'],
+                data['benefit']
             ))
             self.connection.commit()
 
@@ -120,10 +164,33 @@ class Database:
             ))
             self.connection.commit()
 
+    def update_application(self, application_id, data):
+        with self.connection.cursor() as cursor:
+            sql = """UPDATE applications SET
+                    snils = %s,
+                    speciality_code = %s,
+                    submission_date = %s,
+                    benefit = %s
+                    WHERE applicants_id = %s"""
+            cursor.execute(sql, (
+                data['snils'],
+                data['speciality_code'],
+                data['submission_date'],
+                data['benefit'],
+                application_id
+            ))
+            self.connection.commit()
+
     def delete_applicant(self, snils):
         with self.connection.cursor() as cursor:
             sql = "DELETE FROM `applicants` WHERE snils = %s"
             cursor.execute(sql, (snils,))
+            self.connection.commit()
+
+    def delete_application(self, application_id):
+        with self.connection.cursor() as cursor:
+            sql = "DELETE FROM `applications` WHERE application_id = %s"
+            cursor.execute(sql, (application_id))
             self.connection.commit()
 
     def close(self):
@@ -161,6 +228,7 @@ class ApplicantDialog(QDialog):
 
         if self.snils:
             self.setWindowTitle("Редактирование абитуриента")
+            self.titleLabel.setText("Редактирование абитуриента")
             self.inputSnils.setEnabled(False)
             self.fill_data()
         else:
@@ -308,6 +376,133 @@ class ApplicantDialog(QDialog):
                 self, "Ошибка", f"Ошибка при сохранении:\n{e}")
 
 
+class ApplicationDialog(QDialog):
+    def __init__(self, parent=None, db=None, application_id=None):
+        super().__init__(parent)
+        uic.loadUi('./ui/application_dialog.ui', self)
+
+        self.inputSubmissionDate.setDate(QDate(2026, 6, 1))
+
+        self.db = db
+        self.application_id = application_id
+
+        self.load_data()
+
+        if self.application_id:
+            self.setWindowTitle("Редактирование заявления")
+            self.titleLabel.setText("Редактирование заявления")
+            self.fill_data()
+
+        self.btnSave.clicked.connect(self.save)
+        self.btnCancel.clicked.connect(self.reject)
+
+    def fill_data(self):
+        with self.db.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT snils, speciality_code, submission_date, benefit
+                FROM applications
+                WHERE applicants_id = %s
+            """, (self.application_id,))
+            row = cursor.fetchone()
+
+        if not row:
+            return
+
+        snils, speciality, date, benefit = row
+
+        # установить абитуриента
+        index = self.comboBox.findData(snils)
+        if index >= 0:
+            self.comboBox.setCurrentIndex(index)
+
+        # установить специальность
+        index = self.inputSpecialty.findData(speciality)
+        if index >= 0:
+            self.inputSpecialty.setCurrentIndex(index)
+
+        # дата
+        self.inputSubmissionDate.setDate(date)
+
+        # льгота
+        index = self.inputBenefit.findText(
+            benefit if benefit else "Выберите льготу")
+        if index >= 0:
+            self.inputBenefit.setCurrentIndex(index)
+
+    def load_data(self):
+        self.load_applicants()
+        self.load_specialties()
+
+    def load_applicants(self):
+        with self.db.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT snils, last_name, first_name, middle_name
+                FROM applicants
+            """)
+            rows = cursor.fetchall()
+
+        self.comboBox.clear()
+        self.comboBox.addItem("Выберите абитуриента", None)
+
+        for snils, last, first, middle in rows:
+            fio = f"{last} {first} {middle or ''}".strip()
+            text = f"{snils} - {fio}"
+
+            self.comboBox.addItem(text, snils)
+
+    def load_specialties(self):
+        with self.db.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT speciality_code, speciality_name
+                FROM specialties
+            """)
+            rows = cursor.fetchall()
+
+        self.inputSpecialty.clear()
+        self.inputSpecialty.addItem("Выберите специальность", None)
+
+        for code, name in rows:
+            text = f"{code} - {name}"
+            self.inputSpecialty.addItem(text, code)
+
+    def save(self):
+        snils = self.comboBox.currentData()
+        speciality = self.inputSpecialty.currentData()
+        date = self.inputSubmissionDate.date().toString("yyyy-MM-dd")
+        benefit = self.inputBenefit.currentText()
+
+        if benefit == "Выберите льготу":
+            benefit = None
+
+        if not snils:
+            QMessageBox.warning(self, "Ошибка", "Выберите абитуриента")
+            return
+
+        if not speciality:
+            QMessageBox.warning(self, "Ошибка", "Выберите специальность")
+            return
+
+        data = {
+            'snils': snils,
+            'speciality_code': speciality,
+            'submission_date': date,
+            'benefit': benefit
+        }
+
+        try:
+            if self.application_id:
+                self.db.update_application(self.application_id, data)
+                QMessageBox.information(self, "Успех", "Заявление обновлено!")
+            else:
+                self.db.insert_application(data)
+                QMessageBox.information(self, "Успех", "Заявление добавлено!")
+
+            self.accept()
+
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка", f"Ошибка:\n{e}")
+
+
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -372,8 +567,8 @@ class MyWidget(QMainWindow):
             lambda: (self.stackedWidget.setCurrentWidget(self.pageReports), self.on_menu_click(self.btnReports)))
         self.btnSearchApplicant.clicked.connect(lambda:
                                                 (self.search_and_filter('applicants')))
-        self.btnSearchApplication.clicked.connect(lambda:
-                                                  self.search_and_filter('applications'))
+        self.btnSearchApplicataion.clicked.connect(lambda:
+                                                   self.search_and_filter('applications'))
         self.btnSearchDirection.clicked.connect(lambda:
                                                 self.search_and_filter('specialties'))
         self.btnSearchDepartment.clicked.connect(lambda:
@@ -382,16 +577,21 @@ class MyWidget(QMainWindow):
             lambda: (self.load_data(), self.reset_selection(self.tableApplicants, self.searchApplicants), self.cmbGender.setCurrentIndex(0), self.cmbCertificate.setCurrentIndex(0), self.cmbPhoto.setCurrentIndex(0)))
 
         self.btnUpdateApplication.clicked.connect(
-            lambda: (self.load_data(), self.reset_selection(self.tableApplications, self.searchApplication)))
+            lambda: (self.load_data(), self.reset_selection(self.tableApplications, self.searchApplication), self.cmbBenefit.setCurrentIndex(0)))
 
         self.btnUpdateDirection.clicked.connect(
             lambda: (self.load_data(), self.reset_selection(self.tableDirections, self.searchDirections)))
 
         self.btnUpdateDepartment.clicked.connect(
             lambda: (self.load_data(), self.reset_selection(self.tableDepartments, self.searchDepartments), ))
-        self.btnAddApplicant.clicked.connect(self.open_add_dialog)
+        self.btnAddApplicant.clicked.connect(
+            lambda: self.open_add_dialog(ApplicantDialog))
+        self.btnAddApplication.clicked.connect(
+            lambda: self.open_add_dialog(ApplicationDialog))
         self.btnEditApplicant.clicked.connect(self.open_edit_dialog)
+        self.btnEditApplication.clicked.connect(self.open_edit_dialog)
         self.btnDeleteApplicant.clicked.connect(self.delete_applicant)
+        self.btnDeleteApplication.clicked.connect(self.delete_application)
 
     def setup_tables(self):
         '''Загрузка заголовков таблиц'''
@@ -403,7 +603,7 @@ class MyWidget(QMainWindow):
 
         self.tableApplications.setColumnCount(5)
         self.tableApplications.setHorizontalHeaderLabels(
-            ['id', 'СНИЛС', 'Код специальности', 'Дата подачи', 'Льгота'])
+            ['id', 'СНИЛС', 'Название специальности', 'Дата подачи', 'Льгота'])
         self.tableApplications.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents)
         self.tableApplications.setColumnHidden(0, True)
@@ -423,12 +623,17 @@ class MyWidget(QMainWindow):
         self.tableDepartments.setColumnHidden(0, True)
 
     def format_value(self, data, column_number):
-        '''Форматирование столбцов'''
-        if column_number == 8 or column_number == 11:
+        """Форматирование значений для определённых столбцов"""
+        # Номера столбцов, которые нужно форматировать
+        format_columns = {8, 11}
+        print(data, type(data))
+        if data == None:
+            return '-'
+        if column_number in format_columns:
             if str(data) == '0':
-                data = 'Нет'
+                return 'Нет'
             elif str(data) == '1':
-                data = 'Есть'
+                return 'Есть'
         return data
 
     def load_data(self):
@@ -443,7 +648,10 @@ class MyWidget(QMainWindow):
 
         for key, value in tables.items():
             print(key, value)
-            sql = self.db.select(key)
+            if key == 'applications':
+                sql = self.db.get_applications_with_specialties()
+            else:
+                sql = self.db.select(key)
 
             if sql and len(sql) > 0:
                 actual_columns = len(sql[0])
@@ -466,7 +674,10 @@ class MyWidget(QMainWindow):
         search_text = config['search_field'].text().lower()
         if search_text:  # поиск
             print(search_text)
-            all_data = self.db.select(table_name)
+            if table_name == 'applications':
+                all_data = self.db.get_applications_with_specialties()
+            else:
+                all_data = self.db.select(table_name)
             table_widget.setRowCount(len(all_data))
             table_widget.clearSelection()
             table_widget.setSelectionMode(
@@ -503,8 +714,19 @@ class MyWidget(QMainWindow):
                     result = self.db.select(table_name)
                 else:
                     result = self.db.filter(table_name, filters)
+            if table_name == 'applications':
+                filters = {
+                    'benefit': self.cmbBenefit.currentText()
+                }
+                all_default = all('Выберите' in v for v in filters.values())
+
+                if all_default:
+                    result = self.db.get_applications_with_specialties()
+                else:
+                    result = self.db.filter(table_name, filters)
+
             else:
-                result = self.db.select(table_name)
+                result = self.db.get_applications_with_specialties()
 
             config['table_widget'].setRowCount(len(result))
             for row_number, row_data in enumerate(result):
@@ -519,24 +741,72 @@ class MyWidget(QMainWindow):
             table_widget.SelectionMode.SingleSelection)
         search_field.clear()
 
-    def open_add_dialog(self):
-        dialog = ApplicantDialog(self.db, parent=self)
+    def open_add_dialog(self, dialog_class):
+        dialog = dialog_class(db=self.db, parent=self)
         if dialog.exec():
             self.load_data()
 
     def open_edit_dialog(self):
-        selected = self.tableApplicants.selectedItems()
-        if not selected:
-            QMessageBox.warning(
-                self, "Ошибка", "Выберите абитуриента для редактирования")
-            return
+        current_page = self.stackedWidget.currentWidget()
 
-        row = self.tableApplicants.currentRow()
-        snils = self.tableApplicants.item(row, 0).text()
+        # Абитуриенты
+        if current_page == self.pageApplicants:
+            selected = self.tableApplicants.selectedItems()
+            if not selected:
+                QMessageBox.warning(self, "Ошибка", "Выберите абитуриента")
+                return
 
-        dialog = ApplicantDialog(self.db, snils=snils, parent=self)
-        if dialog.exec():
-            self.load_data()
+            row = self.tableApplicants.currentRow()
+            snils = self.tableApplicants.item(row, 0).text()
+
+            dialog = ApplicantDialog(self.db, snils=snils, parent=self)
+            if dialog.exec():
+                self.load_data()
+
+        # === ЗАЯВЛЕНИЯ ===
+        elif current_page == self.pageApplications:
+            selected = self.tableApplications.selectedItems()
+            if not selected:
+                QMessageBox.warning(self, "Ошибка", "Выберите заявление")
+                return
+
+            row = self.tableApplications.currentRow()
+
+            app_id = int(self.tableApplications.item(row, 0).text())
+            snils = self.tableApplications.item(row, 1).text()
+            speciality_name = self.tableApplications.item(row, 2).text()
+            date = self.tableApplications.item(row, 3).text()
+            benefit = self.tableApplications.item(row, 4).text()
+
+            dialog = ApplicationDialog(self, db=self.db)
+
+            # СНИЛС
+            index = dialog.comboBox.findData(snils)
+            if index >= 0:
+                dialog.comboBox.setCurrentIndex(index)
+
+            # специальность
+            for i in range(dialog.inputSpecialty.count()):
+                if speciality_name in dialog.inputSpecialty.itemText(i):
+                    dialog.inputSpecialty.setCurrentIndex(i)
+                    break
+
+            # дата
+            dialog.inputSubmissionDate.setDate(
+                QDate.fromString(date, "yyyy-MM-dd")
+            )
+
+            # льгота
+            if benefit:
+                index = dialog.inputBenefit.findText(benefit)
+                if index >= 0:
+                    dialog.inputBenefit.setCurrentIndex(index)
+
+            # id
+            dialog.application_id = app_id
+
+            if dialog.exec():
+                self.load_data()
 
     def delete_applicant(self):
         '''Удаление абитуриента'''
@@ -561,6 +831,34 @@ class MyWidget(QMainWindow):
                 QMessageBox.information(
                     self, "Успех", "Абитуриент успешно удалён!")
                 self.load_data()
+            except Exception as e:
+                QMessageBox.critical(
+                    self, "Ошибка", f"Ошибка при удалении:\n{e}")
+
+    def delete_application(self):
+        '''Удаление заявления'''
+        selected = self.tableApplications.selectedItems()
+        if not selected:
+            QMessageBox.warning(
+                self, "Ошибка", "Выберите заявление для удаления")
+            return
+
+        row = self.tableApplications.currentRow()
+        # ID заявления из скрытого столбца
+        app_id = int(self.tableApplications.item(row, 0).text())
+
+        reply = QMessageBox.question(
+            self, "Подтверждение",
+            "Вы уверены, что хотите удалить это заявление?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            try:
+                self.db.delete_application(app_id)
+                QMessageBox.information(
+                    self, "Успех", "Заявление успешно удалено!")
+                self.load_data()  # Обновляем таблицу
             except Exception as e:
                 QMessageBox.critical(
                     self, "Ошибка", f"Ошибка при удалении:\n{e}")

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddApplicationDialog</class>
+ <widget class="QDialog" name="AddApplicationDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>366</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Добавление заявления</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog,
+QWidget,
+QScrollArea,
+QScrollArea &gt; QWidget,
+QScrollArea &gt; QWidget &gt; QWidget {
+    background-color: rgb(255, 255, 255);
+}
+QLabel {
+    color: rgb(0, 0, 0);
+    background-color: transparent;
+}
+QLabel#groupLabel {
+    color: #1976D2;
+    font-weight: bold;
+    padding-top: 8px;
+    background-color: transparent;
+}
+QPushButton {
+    background-color: #1976D2;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 3px;
+    min-height: 28px;
+    padding: 0 16px;
+}
+QPushButton:hover {
+    background-color: #1565C0;
+}
+QPushButton:pressed {
+    background-color: #0D47A1;
+}
+QPushButton#btnCancel {
+    background-color: #757575;
+}
+QPushButton#btnCancel:hover {
+    background-color: #616161;
+}
+QPushButton#btnCancel:pressed {
+    background-color: #424242;
+}
+QLineEdit {
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #000000;
+    min-height: 28px;
+    padding: 0 8px;
+}
+QLineEdit:focus {
+    border: 1px solid #1976D2;
+}
+QComboBox {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 5px;
+    color: #000000;
+    min-height: 28px;
+}
+QComboBox:focus {
+    border: 1px solid #1976D2;
+}
+QDateEdit {
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #000000;
+    min-height: 28px;
+    padding: 0 8px;
+}
+QDateEdit:focus {
+    border: 1px solid #1976D2;
+}
+QSpinBox {
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #000000;
+    min-height: 28px;
+    padding: 0 8px;
+}
+QDoubleSpinBox {
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    color: #000000;
+    min-height: 28px;
+    padding: 0 8px;
+}
+QCheckBox {
+    color: #000000;
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #E0E0E0;
+    border-radius: 3px;
+    background-color: #F5F5F5;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #1976D2;
+    border: 1px solid #1976D2;
+}
+
+QFrame#divider {
+    color: #E0E0E0;
+}
+QScrollArea {
+    border: none;
+    background-color: rgb(255, 255, 255);
+}
+QAbstractItemView {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #E0E0E0;
+    color: rgb(0, 0, 0);
+}
+QAbstractItemView::item:selected {
+    background-color: #1976D2;
+    color: #FFFFFF;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollContent">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>548</width>
+        <height>322</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <property name="leftMargin">
+        <number>24</number>
+       </property>
+       <property name="topMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>24</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="titleLabel">
+         <property name="styleSheet">
+          <string>font-size: 16px; font-weight: bold; color: #000000; padding-bottom: 4px;</string>
+         </property>
+         <property name="text">
+          <string>Добавление заявления</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="divider">
+         <property name="frameShape">
+          <enum>QFrame::Shape::HLine</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Sunken</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="groupLabel">
+         <property name="text">
+          <string>ДАННЫЕ ЗАЯВЛЕНИЯ</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblSnils">
+           <property name="text">
+            <string>СНИЛС *</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>Выберите абитуриента</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblSpecialty">
+           <property name="text">
+            <string>Специальность *</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="inputSpecialty">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>Выберите специальность</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblSubmissionDate">
+           <property name="text">
+            <string>Дата подачи *</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateEdit" name="inputSubmissionDate">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="displayFormat">
+            <string>dd.MM.yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblBenefit">
+           <property name="text">
+            <string>Льгота</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="inputBenefit">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>Выберите льготу</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Нет</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Для детей инвалидов</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Для детей участников СВО</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Льгота для сирот</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="dividerBottom">
+     <property name="frameShape">
+      <enum>QFrame::Shape::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="btnLayout">
+     <property name="leftMargin">
+      <number>24</number>
+     </property>
+     <property name="topMargin">
+      <number>12</number>
+     </property>
+     <property name="rightMargin">
+      <number>24</number>
+     </property>
+     <property name="bottomMargin">
+      <number>16</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel">
+       <property name="text">
+        <string>Отмена</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSave">
+       <property name="text">
+        <string>Сохранить</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

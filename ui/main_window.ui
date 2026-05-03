@@ -379,7 +379,7 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="pageDashboard">
        <layout class="QVBoxLayout">
@@ -881,7 +881,7 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="cmdBenefit">
+           <widget class="QComboBox" name="cmbBenefit">
             <item>
              <property name="text">
               <string>Выберите льготу</string>
@@ -905,7 +905,7 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnSearchApplication">
+           <widget class="QPushButton" name="btnSearchApplicataion">
             <property name="text">
              <string>Поиск</string>
             </property>
@@ -979,7 +979,7 @@ QPushButton:hover {
           <item>
            <widget class="QPushButton" name="btnAddApplication">
             <property name="text">
-             <string>+ Добавить</string>
+             <string>Добавить</string>
             </property>
            </widget>
           </item>
