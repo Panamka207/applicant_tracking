@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddApplicationDialog</class>
- <widget class="QDialog" name="AddApplicationDialog">
+ <class>AddDirectionDialog</class>
+ <widget class="QDialog" name="AddDirectionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>560</width>
-    <height>448</height>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Добавление заявления</string>
+   <string>Добавление направления</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog,
@@ -74,17 +74,6 @@ QComboBox {
     min-height: 28px;
 }
 QComboBox:focus {
-    border: 1px solid #1976D2;
-}
-QDateEdit {
-    background-color: #F5F5F5;
-    border: 1px solid #E0E0E0;
-    border-radius: 8px;
-    color: #000000;
-    min-height: 28px;
-    padding: 0 8px;
-}
-QDateEdit:focus {
     border: 1px solid #1976D2;
 }
 QSpinBox {
@@ -166,7 +155,7 @@ QAbstractItemView::item:selected {
         <x>0</x>
         <y>0</y>
         <width>560</width>
-        <height>389</height>
+        <height>461</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="scrollLayout">
@@ -191,7 +180,7 @@ QAbstractItemView::item:selected {
           <string>font-size: 16px; font-weight: bold; color: #000000; padding-bottom: 4px;</string>
          </property>
          <property name="text">
-          <string>Добавление заявления</string>
+          <string>Добавление направления</string>
          </property>
         </widget>
        </item>
@@ -208,36 +197,60 @@ QAbstractItemView::item:selected {
        <item>
         <widget class="QLabel" name="groupLabel">
          <property name="text">
-          <string>ДАННЫЕ ЗАЯВЛЕНИЯ</string>
+          <string>ИНФОРМАЦИЯ О НАПРАВЛЕНИИ</string>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="lblSnils">
+          <widget class="QLabel" name="lblSpecialityCode">
            <property name="text">
-            <string>СНИЛС *</string>
+            <string>Код специальности *</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>40</height>
-            </size>
+          <widget class="QLineEdit" name="inputSpecialityCode">
+           <property name="placeholderText">
+            <string>Введите код специальности</string>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblSpecialityName">
+           <property name="text">
+            <string>Название специальности *</string>
            </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inputSpecialityName">
+           <property name="placeholderText">
+            <string>Введите название специальности</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblDepartment">
+           <property name="text">
+            <string>Отделение *</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="inputDepartment">
            <item>
             <property name="text">
-             <string>Выберите абитуриента</string>
+             <string>Выберите отделение</string>
             </property>
            </item>
           </widget>
@@ -247,57 +260,22 @@ QAbstractItemView::item:selected {
        <item>
         <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="lblSpecialty">
+          <widget class="QLabel" name="lblBudgetPlaces">
            <property name="text">
-            <string>Специальность *</string>
+            <string>Количество бюджетных мест *</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="inputSpecialty">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>40</height>
-            </size>
+          <widget class="QSpinBox" name="inputBudgetPlaces">
+           <property name="minimum">
+            <number>0</number>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
+           <property name="maximum">
+            <number>1000</number>
            </property>
-           <item>
-            <property name="text">
-             <string>Выберите специальность</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout">
-         <item>
-          <widget class="QLabel" name="lblSubmissionDate">
-           <property name="text">
-            <string>Дата подачи *</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="inputSubmissionDate">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="displayFormat">
-            <string>dd.MM.yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
+           <property name="value">
+            <number>0</number>
            </property>
           </widget>
          </item>
@@ -306,69 +284,75 @@ QAbstractItemView::item:selected {
        <item>
         <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="lblBenefit">
+          <widget class="QLabel" name="lblPaidPlaces">
            <property name="text">
-            <string>Льгота</string>
+            <string>Количество платных мест *</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="inputBenefit">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>40</height>
-            </size>
+          <widget class="QSpinBox" name="inputPaidPlaces">
+           <property name="minimum">
+            <number>0</number>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
+           <property name="maximum">
+            <number>1000</number>
            </property>
-           <item>
-            <property name="text">
-             <string>Выберите льготу</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Нет</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Для детей инвалидов</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Для детей участников СВО</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Льгота для сирот</string>
-            </property>
-           </item>
+           <property name="value">
+            <number>0</number>
+           </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="lblStudyType">
+          <widget class="QLabel" name="lblTrainingTime">
            <property name="text">
-            <string>Тип обучения *</string>
+            <string>Время обучения *</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cmbStudyType">
+          <widget class="QLineEdit" name="lineEdit">
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="placeholderText">
+            <string>3 года 10 мес</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="lblFormOfStudy">
+           <property name="text">
+            <string>Форма обучения *</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="inputFormOfStudy">
            <item>
             <property name="text">
              <string>Выберите форму обучения</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Очная</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Заочная</string>
             </property>
            </item>
           </widget>

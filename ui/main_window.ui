@@ -379,7 +379,7 @@ QPushButton:hover {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageDashboard">
        <layout class="QVBoxLayout">
@@ -814,13 +814,6 @@ QPushButton:hover {
             </property>
            </spacer>
           </item>
-          <item>
-           <widget class="QPushButton" name="btnExportApplicants">
-            <property name="text">
-             <string>Экспорт</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
@@ -1003,13 +996,6 @@ QPushButton:hover {
             </property>
            </spacer>
           </item>
-          <item>
-           <widget class="QPushButton" name="btnExportApplications">
-            <property name="text">
-             <string>Экспорт</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
@@ -1061,6 +1047,15 @@ QPushButton:hover {
             <property name="placeholderText">
              <string>Поиск...</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbDirection">
+            <item>
+             <property name="text">
+              <string>Выберите название отделения</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -1166,13 +1161,6 @@ QPushButton:hover {
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnExportDirections">
-            <property name="text">
-             <string>Экспорт</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
