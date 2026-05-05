@@ -6,84 +6,237 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>189</height>
+    <width>420</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Авторизация</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+QMainWindow, QWidget {
+    background-color: #F5F7FA;
+}
+QLabel#titleLabel {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1976D2;
+}
+QLabel#subtitleLabel {
+    font-size: 12px;
+    color: #757575;
+}
+QLabel#fieldLabel {
+    font-size: 13px;
+    color: #424242;
+    font-weight: bold;
+}
+QLabel#status_label {
+    font-size: 12px;
+    color: #757575;
+}
+QWidget#card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+}
+QLineEdit {
+    background-color: #F5F5F5;
+    border: 1.5px solid #E0E0E0;
+    border-radius: 8px;
+    color: #212121;
+    font-size: 13px;
+    min-height: 36px;
+    padding: 0 12px;
+}
+QLineEdit:focus {
+    border: 1.5px solid #1976D2;
+    background-color: #FFFFFF;
+}
+QPushButton#login_btn {
+    background-color: #1976D2;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    min-height: 38px;
+    padding: 0 20px;
+}
+QPushButton#login_btn:hover {
+    background-color: #1565C0;
+}
+QPushButton#login_btn:pressed {
+    background-color: #0D47A1;
+}
+QPushButton#exit_btn {
+    background-color: #EEEEEE;
+    color: #424242;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    min-height: 38px;
+    padding: 0 20px;
+}
+QPushButton#exit_btn:hover {
+    background-color: #E0E0E0;
+}
+QPushButton#exit_btn:pressed {
+    background-color: #BDBDBD;
+}
+   </string>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="outerLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>40</number>
+    </property>
+    <property name="topMargin">
+     <number>32</number>
+    </property>
+    <property name="rightMargin">
+     <number>40</number>
+    </property>
+    <property name="bottomMargin">
+     <number>32</number>
+    </property>
     <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Система учета абитуриентов</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
-       <string>Вход в систему</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
+     <widget class="QWidget" name="card">
+      <layout class="QVBoxLayout" name="cardLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <property name="leftMargin">
+        <number>28</number>
+       </property>
+       <property name="topMargin">
+        <number>28</number>
+       </property>
+       <property name="rightMargin">
+        <number>28</number>
+       </property>
+       <property name="bottomMargin">
+        <number>28</number>
+       </property>
+       <!-- Заголовок -->
+       <item>
+        <widget class="QLabel" name="titleLabel">
          <property name="text">
-          <string>Логин:</string>
+          <string>Вход в систему</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="login_input"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_3">
+       <item>
+        <widget class="QLabel" name="subtitleLabel">
          <property name="text">
-          <string>Пароль:</string>
+          <string>Система учёта абитуриентов</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="password_input">
-         <property name="echoMode">
-          <enum>QLineEdit::EchoMode::Password</enum>
+       <!-- Разделитель -->
+       <item>
+        <widget class="QFrame" name="divider">
+         <property name="frameShape">
+          <enum>QFrame::Shape::HLine</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Sunken</enum>
+         </property>
+        </widget>
+       </item>
+       <!-- Логин -->
+       <item>
+        <layout class="QVBoxLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="fieldLabel">
+           <property name="text">
+            <string>Логин</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="login_input">
+           <property name="placeholderText">
+            <string>Введите логин</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <!-- Пароль -->
+       <item>
+        <layout class="QVBoxLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="fieldLabel_2">
+           <property name="text">
+            <string>Пароль</string>
+           </property>
+           <property name="styleSheet">
+            <string>font-size: 13px; color: #424242; font-weight: bold;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="password_input">
+           <property name="echoMode">
+            <enum>QLineEdit::EchoMode::Password</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Введите пароль</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <!-- Кнопки -->
+       <item>
+        <layout class="QHBoxLayout" name="btnLayout">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="exit_btn">
+           <property name="text">
+            <string>Выход</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="login_btn">
+           <property name="text">
+            <string>Войти</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <!-- Статус -->
+       <item>
+        <widget class="QLabel" name="status_label">
+         <property name="text">
+          <string>Введите логин и пароль</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="login_btn">
-        <property name="text">
-         <string>Войти</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="exit_btn">
-        <property name="text">
-         <string>Выход</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="status_label">
-      <property name="text">
-       <string>Введите логин и пароль</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
      </widget>
     </item>
    </layout>

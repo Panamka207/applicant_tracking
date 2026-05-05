@@ -3,9 +3,7 @@ import sys
 from PyQt6 import uic  # Импортируем uic
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QDialog, QMessageBox
 from PyQt6.QtCore import QDate
-
-
-import pymysql
+from docx import Document
 
 
 class Database:
@@ -174,6 +172,59 @@ class Database:
             ))
         self.connection.commit()
 
+    def insert_department(self, data):
+        """Добавление отделения"""
+        with self.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO departaments
+                (department_name, head_of_department)
+                VALUES (%s, %s)
+            """
+            cursor.execute(sql, (
+                data['name'],
+                data['head']
+            ))
+        self.connection.commit()
+
+    def update_applicant(self, data):
+        with self.connection.cursor() as cursor:
+            sql = """
+                UPDATE applicants SET
+                last_name = %s,
+                first_name = %s,
+                middle_name = %s,
+                birth_date = %s,
+                gender = %s,
+                phone = %s,
+                passport = %s,
+                medical_certificate = %s,
+                email = %s,
+                address = %s,
+                foto = %s
+                WHERE snils = %s"""
+            cursor.execute(sql, (
+                data['last_name'], data['first_name'],
+                data['middle_name'], data['birth_date'], data['gender'],
+                data['phone'], data['passport'], data['medical_certificate'],
+                data['email'], data['address'], data['foto'],
+                data['snils']
+            ))
+
+    def update_education(self, data):
+        with self.connection.cursor() as cursor:
+            sql = """
+                UPDATE education_documents SET
+                school = %s,
+                graduation_year = %s,
+                average_grade = %s
+                WHERE snils = %s"""
+            cursor.execute(sql, (
+                data['school'],
+                data['graduation_year'],
+                data['average_grade'],
+                data['snils']
+            ))
+
     def update_application(self, application_id, data):
         with self.connection.cursor() as cursor:
             sql = """
@@ -219,6 +270,22 @@ class Database:
             ))
         self.connection.commit()
 
+    def update_department(self, department_id, data):
+        """Обновление отделения"""
+        with self.connection.cursor() as cursor:
+            sql = """
+                UPDATE departaments SET
+                    department_name = %s,
+                    head_of_department = %s
+                WHERE department_id = %s
+            """
+            cursor.execute(sql, (
+                data['name'],
+                data['head'],
+                department_id
+            ))
+        self.connection.commit()
+
     def delete_applicant(self, snils):
         with self.connection.cursor() as cursor:
             cursor.execute(
@@ -233,6 +300,14 @@ class Database:
                 (application_id,)
             )
 
+    def delete_department(self, department_id):
+        """Удаление отделения"""
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM departaments WHERE department_id = %s",
+                (department_id,)
+            )
+
     def application_exists(self, snils, speciality_code, study_type):
         with self.connection.cursor() as cursor:
             cursor.execute("""
@@ -243,6 +318,61 @@ class Database:
                 LIMIT 1
             """, (snils, speciality_code, study_type))
             return cursor.fetchone() is not None
+
+    def login_user(self, login, password):
+        with self.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT role FROM users
+                WHERE login = %s AND password = %s
+            """, (login, password))
+
+            return cursor.fetchone()
+
+    def get_competition_list(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    a.snils,
+                    ap.last_name,
+                    ap.first_name,
+                    ap.middle_name,
+                    s.speciality_name,
+                    a.study_type,
+                    a.benefit,
+                    a.submission_date,
+                    ed.average_grade
+                FROM applications a
+                JOIN applicants ap ON a.snils = ap.snils
+                JOIN specialties s ON a.speciality_code = s.speciality_code
+                JOIN education_documents ed ON ed.snils = a.snils
+                ORDER BY ed.average_grade DESC, s.speciality_name, a.submission_date
+            """)
+            return cursor.fetchall()
+
+    def get_enrollment_data(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    a.snils,
+                    ap.last_name,
+                    ap.first_name,
+                    ap.middle_name,
+                    s.speciality_name,
+                    a.study_type,
+                    a.benefit,
+                    a.submission_date,
+                    ed.average_grade,
+                    s.budget_places,
+                    s.paid_places
+                FROM applications a
+                JOIN applicants ap ON a.snils = ap.snils
+                JOIN specialties s ON a.speciality_code = s.speciality_code
+                JOIN education_documents ed ON ed.snils = a.snils
+                ORDER BY 
+                    CASE WHEN a.benefit IS NOT NULL THEN 0 ELSE 1 END,
+                    ed.average_grade DESC
+            """)
+            return cursor.fetchall()
 
     def close(self):
         if self.connection:
@@ -262,9 +392,19 @@ class LoginWindow(QMainWindow):
         self.login_input.setFocus()
 
     def login(self):
-        self.main_window = MyWidget()
-        self.main_window.show()
-        self.close()
+        login = self.login_input.text().strip()
+        password = self.password_input.text().strip()
+
+        result = Database().login_user(login, password)
+
+        if result:
+            role = result[0]
+
+            self.main_window = MyWidget(role=role)
+            self.main_window.show()
+            self.close()
+        else:
+            QMessageBox.warning(self, "Ошибка", "Неверный логин или пароль")
 
 
 class ApplicantDialog(QDialog):
@@ -454,7 +594,7 @@ class ApplicationDialog(QDialog):
             cursor.execute("""
                 SELECT snils, speciality_code, submission_date, benefit
                 FROM applications
-                WHERE applicants_id = %s
+                WHERE application_id = %s
             """, (self.application_id,))
             row = cursor.fetchone()
 
@@ -796,14 +936,96 @@ class SpecialtiesDialog(QDialog):
             QMessageBox.critical(self, "Ошибка", str(e))
 
 
+class DepartmentDialog(QDialog):
+    """Диалог добавления/редактирования отделений"""
+
+    def __init__(self, parent=None, db=None, department_id=None):
+        super().__init__(parent)
+        uic.loadUi('./ui/departments_dialog.ui', self)
+
+        self.db = db
+        self.department_id = department_id
+
+        if self.department_id:
+            self.setWindowTitle("Редактирование отделения")
+            self.titleLabel.setText("Редактирование отделения")
+            self.fill_data()
+        else:
+            self.setWindowTitle("Добавление отделения")
+            self.titleLabel.setText("Добавление отделения")
+
+        self.btnSave.clicked.connect(self.save)
+        self.btnCancel.clicked.connect(self.reject)
+
+    def fill_data(self):
+        """Заполнение полей данными из БД"""
+        with self.db.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT department_id, department_name, head_of_department FROM departaments WHERE department_id = %s",
+                (self.department_id,)
+            )
+            row = cursor.fetchone()
+
+        if not row:
+            return
+
+        department_id, name, head = row
+
+        self.inputDepartmentName.setText(str(name))
+        self.inputDepartmentHead.setText(str(head) if head else '')
+
+    def validate(self):
+        """Валидация данных"""
+        name = self.inputDepartmentName.text().strip()
+        head = self.inputDepartmentHead.text().strip()
+
+        if not name:
+            QMessageBox.warning(self, "Ошибка", "Введите название отделения")
+            return False
+
+        if not head:
+            QMessageBox.warning(self, "Ошибка", "Введите ФИО заведующего")
+            return False
+
+        return True
+
+    def save(self):
+        """Сохранение данных"""
+        if not self.validate():
+            return
+
+        name = self.inputDepartmentName.text().strip()
+        head = self.inputDepartmentHead.text().strip()
+
+        data = {
+            'name': name,
+            'head': head
+        }
+
+        try:
+            if self.department_id:
+                self.db.update_department(self.department_id, data)
+                QMessageBox.information(self, "Успех", "Отделение обновлено!")
+            else:
+                self.db.insert_department(data)
+                QMessageBox.information(self, "Успех", "Отделение добавлено!")
+
+            self.accept()
+
+        except Exception as e:
+            QMessageBox.critical(
+                self, "Ошибка", f"Ошибка при сохранении:\n{e}")
+
+
 class MyWidget(QMainWindow):
-    def __init__(self):
+    def __init__(self, role):
         super().__init__()
         uic.loadUi('./ui/main_window.ui', self)
 
         self.db = Database()
 
         self.setup_tables()
+        self.role = role
 
         self.search_config = {
             'applicants': {
@@ -827,17 +1049,17 @@ class MyWidget(QMainWindow):
         self.connect_button()
         self.load_combox()
         self.load_data()
+        self.setup_permissions()
 
         self.menu_buttons = [
             self.btnApplicants,
-            self.btnDashboard,
             self.btnApplications,
             self.btnDirections,
             self.btnDepartments,
             self.btnReports
         ]
-        self.btnDashboard.setChecked(True)
-        self.stackedWidget.setCurrentWidget(self.pageDashboard)
+        self.btnApplicants.setChecked(True)
+        self.stackedWidget.setCurrentWidget(self.pageApplicants)
         # self.btnReports.clicked.connect(self.run)
 
     def on_menu_click(self, btn):
@@ -849,8 +1071,6 @@ class MyWidget(QMainWindow):
         '''Подключение кнопок'''
         self.btnApplicants.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageApplicants), self.on_menu_click(self.btnApplicants)))
-        self.btnDashboard.clicked.connect(
-            lambda: (self.stackedWidget.setCurrentWidget(self.pageDashboard), self.on_menu_click(self.btnDashboard)))
         self.btnApplications.clicked.connect(
             lambda: (self.stackedWidget.setCurrentWidget(self.pageApplications), self.on_menu_click(self.btnApplications)))
         self.btnDirections.clicked.connect(
@@ -884,12 +1104,37 @@ class MyWidget(QMainWindow):
             lambda: self.open_add_dialog(ApplicationDialog))
         self.btnAddDirection.clicked.connect(
             lambda: self.open_add_dialog(SpecialtiesDialog))
+        self.btnAddDepartment.clicked.connect(
+            lambda: self.open_add_dialog(DepartmentDialog))
         self.btnEditApplicant.clicked.connect(self.open_edit_dialog)
         self.btnEditApplication.clicked.connect(self.open_edit_dialog)
         self.btnEditDirection.clicked.connect(self.open_edit_dialog)
+        self.btnEditDepartment.clicked.connect(self.open_edit_dialog)
         self.btnDeleteApplicant.clicked.connect(self.delete_applicant)
         self.btnDeleteApplication.clicked.connect(self.delete_application)
         self.btnDeleteDirection.clicked.connect(self.delete_direction)
+        self.btnDeleteDepartment.clicked.connect(self.delete_department)
+        self.btnRepDirections.clicked.connect(self.generate_competition_doc)
+        self.btnRepEnrollment.clicked.connect(
+            self.generate_enrollment_split_tables)
+
+    def setup_permissions(self):
+        if self.role == "operator":
+            # ❌ отчёты
+            self.btnReports.setEnabled(False)
+
+            # ❌ направления
+            self.btnAddDirection.setEnabled(False)
+            self.btnEditDirection.setEnabled(False)
+            self.btnDeleteDirection.setEnabled(False)
+
+            # ❌ кнопки отделений (если есть)
+            if hasattr(self, 'btnAddDepartment'):
+                self.btnAddDepartment.setEnabled(False)
+            if hasattr(self, 'btnEditDepartment'):
+                self.btnEditDepartment.setEnabled(False)
+            if hasattr(self, 'btnDeleteDepartment'):
+                self.btnDeleteDepartment.setEnabled(False)
 
     def setup_tables(self):
         '''Загрузка заголовков таблиц'''
@@ -984,78 +1229,63 @@ class MyWidget(QMainWindow):
         config = self.search_config[table_name]
         table_widget = config['table_widget']
         search_text = config['search_field'].text().lower()
-        if search_text:  # поиск
-            print(search_text)
-            if table_name == 'applications':
-                all_data = self.db.get_applications_with_specialties()
-            elif table_name == 'specialties':
-                all_data = self.db.get_specialties_with_departaments()
+
+        if table_name == 'applicants':
+            filters = {
+                'gender': self.cmbGender.currentText(),
+                'medical_certificate': '1' if self.cmbCertificate.currentText() == 'Есть' else
+                ('0' if self.cmbCertificate.currentText()
+                 == 'Нет' else 'Выберите фото'),
+                'foto': '1' if self.cmbPhoto.currentText() == 'Есть' else
+                ('0' if self.cmbPhoto.currentText() == 'Нет' else 'Выберите фото')
+            }
+            all_default = all('Выберите' in v for v in filters.values())
+            if all_default:
+                result = self.db.select(table_name)
             else:
-                all_data = self.db.select(table_name)
-            table_widget.setRowCount(len(all_data))
+                result = self.db.filter(table_name, filters)
+
+        elif table_name == 'applications':
+            filters = {'benefit': self.cmbBenefit.currentText()}
+            all_default = all('Выберите' in v for v in filters.values())
+            if all_default:
+                result = self.db.get_applications_with_specialties()
+            else:
+                result = self.db.filter(table_name, filters)
+
+        elif table_name == 'specialties':
+            filters = {'department_name': self.cmbDirection.currentText()}
+            all_default = all('Выберите' in v for v in filters.values())
+            if all_default:
+                result = self.db.get_specialties_with_departaments()
+            else:
+                result = self.db.filter(table_name, filters)
+
+        else:
+            result = self.db.select(table_name)
+
+        table_widget.setRowCount(len(result))
+        for row_number, row_data in enumerate(result):
+            for column_number, data in enumerate(row_data):
+                formatted = self.format_value(data, column_number)
+                table_widget.setItem(row_number, column_number,
+                                     QTableWidgetItem(str(formatted)))
+
+        if search_text:
             table_widget.clearSelection()
             table_widget.setSelectionMode(
-                table_widget.selectionMode().MultiSelection
+                table_widget.SelectionMode.MultiSelection
             )
-
-            for row_number, row_data in enumerate(all_data):
-                flag = False
-                for column_number, data in enumerate(row_data):
-                    formatted = self.format_value(data, column_number)
-                    item = QTableWidgetItem(str(formatted))
-                    table_widget.setItem(row_number, column_number, item)
-                    if search_text in str(data).lower():
-                        print(data)
-                        flag = True
-
-                if flag:
-                    table_widget.selectRow(row_number)
-
-        else:  # фильтрация
-            if table_name == 'applicants':
-                filters = {
-                    'gender': self.cmbGender.currentText(),
-                    'medical_certificate': '1' if self.cmbCertificate.currentText() == 'Есть' else
-                    ('0' if self.cmbCertificate.currentText()
-                     == 'Нет' else 'Выберите фото'),
-                    'foto': '1' if self.cmbPhoto.currentText() == 'Есть' else
-                    ('0' if self.cmbPhoto.currentText()
-                     == 'Нет' else 'Выберите фото')
-                }
-                all_default = all('Выберите' in v for v in filters.values())
-
-                if all_default:
-                    result = self.db.select(table_name)
-                else:
-                    result = self.db.filter(table_name, filters)
-            elif table_name == 'applications':
-                filters = {
-                    'benefit': self.cmbBenefit.currentText()
-                }
-                all_default = all('Выберите' in v for v in filters.values())
-
-                if all_default:
-                    result = self.db.get_applications_with_specialties()
-                else:
-                    result = self.db.filter(table_name, filters)
-            elif table_name == 'specialties':
-                filters = {
-                    'department_name': self.cmbDirection.currentText()
-                }
-                all_default = all('Выберите' in v for v in filters.values())
-                if all_default:
-                    result = self.db.get_specialties_with_departaments
-                else:
-                    result = self.db.filter(table_name, filters)
-            else:
-                result = self.db.select()
-
-            config['table_widget'].setRowCount(len(result))
             for row_number, row_data in enumerate(result):
-                for column_number, data in enumerate(row_data):
-                    formatted = self.format_value(data, column_number)
-                    config['table_widget'].setItem(row_number, column_number,
-                                                   QTableWidgetItem(str(formatted)))
+                for data in row_data:
+                    if search_text in str(data).lower():
+                        table_widget.selectRow(row_number)
+                        break
+        else:
+            table_widget.clearSelection()
+            table_widget.setSelectionMode(
+                table_widget.SelectionMode.SingleSelection
+            )
 
     def reset_selection(self, table_widget, search_field):
         table_widget.clearSelection()
@@ -1064,7 +1294,7 @@ class MyWidget(QMainWindow):
         search_field.clear()
 
     def open_add_dialog(self, dialog_class):
-        dialog = dialog_class(db=self.db, parent=self)
+        dialog = dialog_class(parent=self, db=self.db)
         if dialog.exec():
             self.load_data()
 
@@ -1093,14 +1323,14 @@ class MyWidget(QMainWindow):
                 return
 
             row = self.tableApplications.currentRow()
-
             app_id = int(self.tableApplications.item(row, 0).text())
             snils = self.tableApplications.item(row, 1).text()
             speciality_name = self.tableApplications.item(row, 2).text()
             date = self.tableApplications.item(row, 3).text()
             benefit = self.tableApplications.item(row, 4).text()
 
-            dialog = ApplicationDialog(self, db=self.db)
+            # ← передаём application_id сразу, чтобы диалог знал что это редактирование
+            dialog = ApplicationDialog(self, db=self.db, application_id=app_id)
 
             # СНИЛС
             index = dialog.comboBox.findData(snils)
@@ -1119,12 +1349,10 @@ class MyWidget(QMainWindow):
             )
 
             # льгота
-            if benefit:
+            if benefit and benefit != '-':
                 index = dialog.inputBenefit.findText(benefit)
                 if index >= 0:
                     dialog.inputBenefit.setCurrentIndex(index)
-
-            dialog.application_id = app_id
 
             if dialog.exec():
                 self.load_data()
@@ -1145,6 +1373,27 @@ class MyWidget(QMainWindow):
                 parent=self,
                 db=self.db,
                 speciality_code=speciality_code
+            )
+
+            if dialog.exec():
+                self.load_data()
+
+        # Отделение
+        elif current_page == self.pageDepartments:
+            selected = self.tableDepartments.selectedItems()
+            if not selected:
+                QMessageBox.warning(self, "Ошибка", "Выберите отделение")
+                return
+
+            row = self.tableDepartments.currentRow()
+
+            # берём ID отделения из скрытого столбца
+            department_id = int(self.tableDepartments.item(row, 0).text())
+
+            dialog = DepartmentDialog(
+                parent=self,
+                db=self.db,
+                department_id=department_id
             )
 
             if dialog.exec():
@@ -1236,6 +1485,156 @@ class MyWidget(QMainWindow):
 
             except Exception as e:
                 QMessageBox.critical(self, "Ошибка", f"Ошибка:\n{e}")
+
+    def delete_department(self):
+        """Удаление отделения"""
+        selected = self.tableDepartments.selectedItems()
+        if not selected:
+            QMessageBox.warning(
+                self, "Ошибка", "Выберите отделение для удаления")
+            return
+
+        row = self.tableDepartments.currentRow()
+        department_id = int(self.tableDepartments.item(row, 0).text())
+
+        reply = QMessageBox.question(
+            self,
+            "Подтверждение",
+            "Вы уверены, что хотите удалить это отделение?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.Yes:
+            try:
+                self.db.delete_department(department_id)
+                QMessageBox.information(self, "Успех", "Отделение удалено!")
+                self.load_data()
+
+            except Exception as e:
+                QMessageBox.critical(self, "Ошибка", f"Ошибка:\n{e}")
+
+    def generate_competition_doc(self):
+        data = self.db.get_competition_list()
+
+        doc = Document()
+        doc.add_heading("Конкурсный список абитуриентов", 0)
+
+        table = doc.add_table(rows=1, cols=7)
+        table.style = 'Table Grid'
+
+        headers = [
+            "СНИЛС", "ФИО", "Специальность",
+            "Тип обучения", "Льгота", "Дата подачи", "Средний балл"
+        ]
+        for i, h in enumerate(headers):
+            table.rows[0].cells[i].text = h
+
+        for row in data:
+            snils, last, first, middle, spec, study, benefit, date, grade = row
+            fio = f"{last} {first} {middle or ''}".strip()
+            cells = table.add_row().cells
+            cells[0].text = str(snils)
+            cells[1].text = fio
+            cells[2].text = spec
+            cells[3].text = study or "-"
+            cells[4].text = benefit if benefit else "-"
+            cells[5].text = str(date)
+            cells[6].text = str(grade)
+
+        doc.save("competition_list.docx")
+        QMessageBox.information(self, "Успех", "Конкурсный список создан!")
+
+    def generate_enrollment_split_tables(self):
+        data = self.db.get_enrollment_data()
+
+        # Группировка по специальностям
+        specialties = {}
+        for row in data:
+            snils, last, first, middle, spec, study, benefit, date, grade, budget_places, paid_places = row
+            if spec not in specialties:
+                specialties[spec] = {
+                    "budget_limit": budget_places,
+                    "paid_limit":   paid_places,
+                    "applicants":   []
+                }
+            specialties[spec]["applicants"].append(row)
+
+        doc = Document()
+        doc.add_heading("ПРИКАЗ О ЗАЧИСЛЕНИИ", 0)
+
+        for spec, info in specialties.items():
+            budget_limit = info["budget_limit"]
+            paid_limit = info["paid_limit"]
+
+            applicants = sorted(
+                info["applicants"],
+                key=lambda x: (
+                    0 if x[6] else 1,     # льготники вверх
+                    -float(x[8])          # был -x[8], падало на Decimal
+                )
+            )
+
+            budget_list = []
+            paid_list = []
+            budget_count = 0
+            paid_count = 0
+
+            for row in applicants:
+                snils, last, first, middle, _spec, study, benefit, date, grade, _bp, _pp = row
+                fio = f"{last} {first} {middle or ''}".strip()
+
+                if benefit and budget_count < budget_limit:
+                    budget_list.append((snils, fio, float(grade), benefit))
+                    budget_count += 1
+                elif study == "Бюджет" and budget_count < budget_limit:
+                    budget_list.append((snils, fio, float(grade), benefit))
+                    budget_count += 1
+                elif study == "Платное" and paid_count < paid_limit:
+                    paid_list.append((snils, fio, float(grade), benefit))
+                    paid_count += 1
+
+            if not budget_list and not paid_list:
+                continue
+
+            doc.add_heading(f"Специальность: {spec}", level=1)
+
+            headers = ["СНИЛС", "ФИО", "Средний балл", "Льгота"]
+
+            doc.add_heading("Бюджет", level=2)
+            if budget_list:
+                table_b = doc.add_table(rows=1, cols=4)
+                table_b.style = 'Table Grid'
+                for i, h in enumerate(headers):
+                    table_b.rows[0].cells[i].text = h
+                for snils, fio, grade, benefit in budget_list:
+                    cells = table_b.add_row().cells
+                    cells[0].text = str(snils)
+                    cells[1].text = fio
+                    cells[2].text = f"{grade:.2f}"
+                    cells[3].text = benefit if benefit else "-"
+            else:
+                doc.add_paragraph("Нет зачисленных на бюджет.")
+
+            # --- ПЛАТНО ---
+            doc.add_heading("Платное обучение", level=2)
+            if paid_list:
+                table_p = doc.add_table(rows=1, cols=4)
+                table_p.style = 'Table Grid'
+                for i, h in enumerate(headers):
+                    table_p.rows[0].cells[i].text = h
+                for snils, fio, grade, benefit in paid_list:
+                    cells = table_p.add_row().cells
+                    cells[0].text = str(snils)
+                    cells[1].text = fio
+                    cells[2].text = f"{grade:.2f}"
+                    cells[3].text = benefit if benefit else "-"
+            else:
+                doc.add_paragraph("Нет зачисленных на платное обучение.")
+
+            doc.add_paragraph("")  # отступ между специальностями
+
+        doc.save("prikaz_o_zachislenii.docx")
+        QMessageBox.information(self, "Готово", "Приказ сформирован успешно!")
 
 
 if __name__ == '__main__':
